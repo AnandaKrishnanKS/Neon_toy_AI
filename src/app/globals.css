@@ -847,18 +847,7 @@ html {
     gap: 0.75rem;
   }
 
-  .nav-orders-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--glass-border);
-  }
 
-  .nav-profile {
-    padding: 6px;
   .nav-cart-btn {
     padding: 0;
     width: 42px;
