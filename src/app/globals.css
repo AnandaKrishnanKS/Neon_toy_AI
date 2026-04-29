@@ -859,12 +859,46 @@ html {
 
   .nav-profile {
     padding: 6px;
+  .nav-cart-btn {
+    padding: 0;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
   }
 
-  .nav-cart-btn {
-    padding: 8px;
+  .nav-cart-btn .cart-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    padding: 2px 5px;
+    font-size: 0.65rem;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-orders-link, .nav-profile {
+    padding: 0;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--glass-border);
+    flex-shrink: 0;
+  }
+
+  .nav-avatar {
+    margin: 0;
   }
 }
 
