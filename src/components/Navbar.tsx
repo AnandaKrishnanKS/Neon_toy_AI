@@ -9,17 +9,17 @@ interface NavbarProps {
   cartCount: number;
 }
 
-export default function Navbar({ 
-  headerVisible, 
-  user, 
-  onLogin, 
-  onOpenCart, 
-  cartCount 
+export default function Navbar({
+  headerVisible,
+  user,
+  onLogin,
+  onOpenCart,
+  cartCount
 }: NavbarProps) {
   return (
     <nav className={`navbar ${!headerVisible ? 'navbar--hidden' : ''}`}>
       <a href="/" className="nav-brand">ToTToys</a>
-      
+
       <div className="nav-actions">
         {user ? (
           <>

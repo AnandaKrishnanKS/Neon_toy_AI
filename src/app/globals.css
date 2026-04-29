@@ -35,6 +35,12 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
+html {
+  overflow-x: hidden;
 }
 
 /* Animations */
@@ -204,8 +210,15 @@ body {
 /* Product Grid */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 30px;
+}
+
+@media (max-width: 400px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 }
 
 .product-link {
@@ -513,6 +526,14 @@ body {
   padding-bottom: 2rem;
 }
 
+@media (max-width: 600px) {
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+}
+
 .profile-avatar {
   width: 100px;
   height: 100px;
@@ -701,6 +722,12 @@ body {
   margin-bottom: 40px;
 }
 
+@media (max-width: 600px) {
+  .add-to-cart-big {
+    max-width: 100%;
+  }
+}
+
 .add-to-cart-big:hover {
   transform: scale(1.05);
   box-shadow: 0 15px 30px rgba(0, 210, 255, 0.3);
@@ -717,6 +744,7 @@ body {
 .meta-item {
   font-size: 0.9rem;
   color: var(--text-secondary);
+  white-space: nowrap;
 }
 
 .meta-item strong {
@@ -735,7 +763,15 @@ body {
   }
   
   .product-detail-info h1 {
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
     font-size: 2.5rem;
+  }
+  .product-detail-info h1 {
+    font-size: 2rem;
   }
 }
 
@@ -780,7 +816,7 @@ body {
   }
   
   .nav-actions {
-    gap: 0.25rem; /* Reduced from 1.5rem (24px) to 4px (~20 pixels closer) */
+    gap: 0.75rem;
   }
 
   .nav-orders-link {
@@ -1260,6 +1296,15 @@ body {
   gap: 40px;
 }
 
+@media (max-width: 1024px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+  .summary-sticky-card {
+    position: static;
+  }
+}
+
 .checkout-section {
   background: var(--card-bg);
   border: 1px solid var(--glass-border);
@@ -1559,6 +1604,24 @@ body {
   justify-content: space-between;
   margin: 40px 0;
   padding: 0 10px;
+}
+
+@media (max-width: 600px) {
+  .tracking-timeline {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+    padding-left: 20px;
+  }
+  .step {
+    flex-direction: row;
+    width: 100%;
+    text-align: left;
+    gap: 20px;
+  }
+  .step-line {
+    display: none;
+  }
 }
 
 .step {
