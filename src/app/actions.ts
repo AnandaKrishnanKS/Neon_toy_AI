@@ -199,7 +199,7 @@ export async function clearCart() {
     if (sessionId) {
       try {
         const cartRes = await query('SELECT id FROM carts WHERE session_id = $1', [sessionId]);
-        if (cartRes.rowCount > 0) {
+        if (cartRes.rowCount && cartRes.rowCount > 0) {
           await query('DELETE FROM cart_items WHERE cart_id = $1', [cartRes.rows[0].id]);
         }
       } catch (e) {

@@ -4,9 +4,9 @@ import { getCart, getUser } from './actions';
 
 export default async function Home() {
   const INITIAL_PAGE_SIZE = 6;
-  let products = [];
+  let products: any[] = [];
   let totalProducts = 0;
-  let cartItems = [];
+  let cartItems: any[] = [];
   const user = await getUser();
 
   try {
