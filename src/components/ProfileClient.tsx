@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User } from '@/lib/types';
 import { updateProfile, logout } from '@/app/actions';
 import { useRouter } from 'next/navigation';
@@ -17,6 +17,20 @@ export default function ProfileClient({ user }: { user: User }) {
     city: user.city || '',
     zipCode: user.zipCode || ''
   });
+  const [theme, setTheme] = useState('dark');
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme);
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -41,7 +55,7 @@ export default function ProfileClient({ user }: { user: User }) {
   return (
     <div className="profile-container">
       <nav className="navbar">
-        <Link href="/" className="nav-brand">NeonToys</Link>
+        <Link href="/" className="nav-brand">ToTToys</Link>
         <div className="nav-actions">
            <Link href="/" className="nav-link">Back to Shop</Link>
         </div>
@@ -55,14 +69,24 @@ export default function ProfileClient({ user }: { user: User }) {
               <h1>User Profile</h1>
               <p>Manage your account settings and view your orders.</p>
             </div>
-            {!isEditing && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginLeft: 'auto' }}>
               <button 
                 className="edit-profile-btn" 
-                onClick={() => setIsEditing(true)}
+                onClick={toggleTheme}
+                style={{ margin: 0, width: '130px' }}
               >
-                Edit Profile
+                {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
               </button>
-            )}
+              {!isEditing && (
+                <button 
+                  className="edit-profile-btn" 
+                  onClick={() => setIsEditing(true)}
+                  style={{ margin: 0, width: '130px' }}
+                >
+                  Edit Profile
+                </button>
+              )}
+            </div>
           </div>
 
           {isEditing ? (

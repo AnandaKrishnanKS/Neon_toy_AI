@@ -18,7 +18,7 @@ export default function Navbar({
 }: NavbarProps) {
   return (
     <nav className={`navbar ${!headerVisible ? 'navbar--hidden' : ''}`}>
-      <a href="/" className="nav-brand">NeonToys</a>
+      <a href="/" className="nav-brand">ToTToys</a>
       
       <div className="nav-actions">
         {user ? (

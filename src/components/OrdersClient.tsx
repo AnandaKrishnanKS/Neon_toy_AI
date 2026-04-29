@@ -46,7 +46,7 @@ export default function OrdersClient({ user, orders }: { user: User, orders: Ord
   return (
     <div className="orders-container">
       <nav className="navbar">
-        <Link href="/" className="nav-brand">NeonToys</Link>
+        <Link href="/" className="nav-brand">ToTToys</Link>
         <div className="nav-actions">
            <Link href="/profile" className="nav-link">Profile</Link>
            <Link href="/" className="nav-link">Shop</Link>
@@ -56,7 +56,7 @@ export default function OrdersClient({ user, orders }: { user: User, orders: Ord
       <main className="orders-content">
         <header className="page-header">
           <h1>Track Your Orders</h1>
-          <p>Real-time delivery status for your neon collection.</p>
+          <p>Real-time delivery status for your toy collection.</p>
         </header>
 
         <div className="orders-list">
