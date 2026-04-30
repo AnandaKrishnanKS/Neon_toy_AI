@@ -9,17 +9,13 @@ export default async function Home() {
   let cartItems: any[] = [];
   const user = await getUser();
 
-  try {
-    const pagedRes = await getProductsPaged(0, INITIAL_PAGE_SIZE);
-    products = pagedRes.products;
-    totalProducts = pagedRes.total;
-    
-    if (isDbConnected) {
-      const cartRes = await getCart();
-      cartItems = cartRes.items || [];
-    }
-  } catch (e) {
-    console.error('Failed to fetch data:', e);
+  const pagedRes = await getProductsPaged(0, INITIAL_PAGE_SIZE);
+  products = pagedRes.products;
+  totalProducts = pagedRes.total;
+  
+  if (isDbConnected) {
+    const cartRes = await getCart();
+    cartItems = cartRes.items || [];
   }
 
   return (
