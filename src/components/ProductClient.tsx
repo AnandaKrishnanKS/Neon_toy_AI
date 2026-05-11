@@ -24,6 +24,13 @@ export default function ProductClient({
   const [headerVisible, setHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [localCart, setLocalCart] = useState<CartItem[]>([]);
+  const [viewers, setViewers] = useState<number>(12);
+  const [stock, setStock] = useState<number>(3);
+
+  useEffect(() => {
+    setViewers(Math.floor(Math.random() * 20) + 5);
+    setStock(Math.floor(Math.random() * 8) + 1);
+  }, []);
 
   const itemsToRender = dbConnected ? cartItems : localCart;
   const cartTotal = itemsToRender.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -119,8 +126,8 @@ export default function ProductClient({
               </div>
 
               <div className="scarcity-badges">
-                <span className="badge fire">🔥 {Math.floor(Math.random() * 20) + 5} people are looking at this</span>
-                <span className="badge stock">⏳ Only {Math.floor(Math.random() * 8) + 1} left in stock - order soon!</span>
+                <span className="badge fire">🔥 {viewers} people are looking at this</span>
+                <span className="badge stock">⏳ Only {stock} left in stock - order soon!</span>
               </div>
 
               <div className="product-detail-price">₹{Number(product.price).toFixed(2)}</div>
