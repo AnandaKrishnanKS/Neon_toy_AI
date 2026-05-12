@@ -233,7 +233,7 @@ const ChatBot = () => {
         @media (max-width: 480px) {
           .chatbot-window {
             width: calc(100vw - 40px);
-            height: calc(100vh - 180px - 1rem);
+            height: calc(100dvh - 240px);
             right: -10px;
           }
         }
