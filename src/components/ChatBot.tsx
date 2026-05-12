@@ -236,9 +236,6 @@ const ChatBot = () => {
             height: calc(100dvh - 240px);
             right: -10px;
           }
-          .chatbot-window.open {
-            box-shadow: 0 0 35px rgba(0, 210, 255, 0.3), 0 20px 50px rgba(0, 0, 0, 0.8);
-          }
         }
 
         .chat-header {
