@@ -132,7 +132,7 @@ export default function ProfileClient({ user }: { user: User }) {
                 <input type="text" name="phone" value={formData.phone} onChange={handleChange} />
               </div>
               
-              <h3 className="form-section-title">Shipping Address</h3>
+              <h2 className="form-section-title">Shipping Address</h2>
               <div className="form-group">
                 <label>Street Address</label>
                 <input type="text" name="address" value={formData.address} onChange={handleChange} />

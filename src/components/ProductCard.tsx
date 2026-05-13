@@ -24,7 +24,7 @@ export default function ProductCard({ product, onAddToCart, onQuickView }: Produ
       </div>
       <div className="product-info">
         <Link href={`/product/${product.id}`} className="product-link">
-          <h3 className="product-title">{product.name}</h3>
+          <h2 className="product-title">{product.name}</h2>
         </Link>
         <p className="product-desc">{product.description}</p>
         <div className="product-footer">

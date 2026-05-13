@@ -118,7 +118,7 @@ const ChatBot = () => {
         <div className="chat-header">
           <div className="bot-info">
             <div className="bot-status"></div>
-            <h3>Neon Assistant</h3>
+            <h2>Neon Assistant</h2>
           </div>
           <button className="minimize-btn" onClick={() => setIsOpen(false)} aria-label="Minimize chat">—</button>
         </div>
@@ -261,7 +261,7 @@ const ChatBot = () => {
           box-shadow: 0 0 8px #4ade80;
         }
 
-        .chat-header h3 {
+        .chat-header h2 {
           font-size: 1.1rem;
           font-weight: 700;
           margin: 0;

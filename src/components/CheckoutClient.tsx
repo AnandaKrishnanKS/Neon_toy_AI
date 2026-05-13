@@ -32,7 +32,7 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
       <div className="checkout-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', padding: '120px 20px' }}>
         <div style={{ margin: 'auto', textAlign: 'center', background: 'var(--card-bg)', padding: '50px 40px', borderRadius: '24px', border: '1px solid var(--card-border)', maxWidth: '500px', width: '100%' }}>
           <div style={{ fontSize: '3rem', marginBottom: '10px' }}>🔒</div>
-          <h2 style={{ marginBottom: '15px' }}>Authentication Required</h2>
+          <h1 style={{ marginBottom: '15px', fontSize: '1.5em', fontWeight: 'bold' }}>Authentication Required</h1>
           <p style={{ marginBottom: '30px', color: 'var(--text-secondary)' }}>You must be logged in to securely verify your details and place your order.</p>
           <button 
             className="checkout-btn" 
@@ -191,6 +191,9 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
       </nav>
 
       <main className="checkout-content">
+        <header style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', border: 0 }}>
+          <h1>Secure Checkout</h1>
+        </header>
         <div className="checkout-grid">
           <div className="checkout-details-section">
             <section className="checkout-section">
@@ -256,7 +259,7 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
 
           <div className="checkout-summary-section">
             <div className="summary-sticky-card">
-              <h3>Order Summary</h3>
+              <h2 style={{ fontSize: '1.17em', margin: '1em 0', fontWeight: 'bold' }}>Order Summary</h2>
               <div className="summary-items">
                 {cartItems.map(item => (
                   <div key={item.product_id} className="summary-item">

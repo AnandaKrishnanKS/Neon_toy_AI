@@ -11,7 +11,7 @@ const DUMMY_REVIEWS = [
 export default function ReviewTicker() {
   return (
     <div className="review-ticker-wrapper">
-      <h3 className="review-ticker-title">Loved by Parents</h3>
+      <h2 className="review-ticker-title">Loved by Parents</h2>
       <div className="review-ticker-container">
         <div className="review-ticker-track">
           {/* Duplicate the array to create a seamless infinite loop */}
