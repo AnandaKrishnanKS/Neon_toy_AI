@@ -243,7 +243,8 @@ export default function ProfileClient({ user }: { user: User }) {
             <span style={{ color: '#e4e6eb', fontWeight: '600', fontSize: '15px' }}>Support Chat</span>
             <button 
               onClick={() => setShowChat(false)}
-              style={{ background: 'transparent', border: 'none', color: '#b0b3b8', cursor: 'pointer', fontSize: '20px', lineHeight: '1' }}
+              style={{ background: 'transparent', border: 'none', color: '#b0b3b8', cursor: 'pointer', fontSize: '20px', lineHeight: '1', minWidth: '44px', minHeight: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              aria-label="Close support chat"
             >
               &times;
             </button>

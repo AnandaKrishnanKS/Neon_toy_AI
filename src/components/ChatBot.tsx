@@ -120,7 +120,7 @@ const ChatBot = () => {
             <div className="bot-status"></div>
             <h3>Neon Assistant</h3>
           </div>
-          <button className="minimize-btn" onClick={() => setIsOpen(false)}>—</button>
+          <button className="minimize-btn" onClick={() => setIsOpen(false)} aria-label="Minimize chat">—</button>
         </div>
 
         <div className="chat-messages">
@@ -151,7 +151,7 @@ const ChatBot = () => {
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
           />
-          <button className="send-btn" onClick={handleSend} disabled={!input.trim()}>
+          <button className="send-btn" onClick={handleSend} disabled={!input.trim()} aria-label="Send message">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -276,6 +276,11 @@ const ChatBot = () => {
           color: var(--text-secondary);
           cursor: pointer;
           font-size: 1.2rem;
+          min-width: 48px;
+          min-height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .chat-messages {

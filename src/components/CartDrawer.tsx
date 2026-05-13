@@ -21,7 +21,7 @@ export default function CartDrawer({
       <div className="cart-sidebar" onClick={e => e.stopPropagation()}>
         <div className="cart-header">
           <h2>Your Cart</h2>
-          <button className="close-cart" onClick={onClose}>✕</button>
+          <button className="close-cart" onClick={onClose} aria-label="Close cart">✕</button>
         </div>
 
         <div className="shipping-progress">
@@ -50,9 +50,9 @@ export default function CartDrawer({
                   <div className="cart-item-price">₹{Number(item.price).toFixed(2)}</div>
                   <div className="cart-item-actions">
                     <div className="qty-controls">
-                      <button className="qty-btn" onClick={() => onUpdateQty(item.product_id, item.quantity - 1)}>-</button>
+                      <button className="qty-btn" onClick={() => onUpdateQty(item.product_id, item.quantity - 1)} aria-label="Decrease quantity">-</button>
                       <span>{item.quantity}</span>
-                      <button className="qty-btn" onClick={() => onUpdateQty(item.product_id, item.quantity + 1)}>+</button>
+                      <button className="qty-btn" onClick={() => onUpdateQty(item.product_id, item.quantity + 1)} aria-label="Increase quantity">+</button>
                     </div>
                   </div>
                 </div>

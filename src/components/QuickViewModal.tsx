@@ -15,7 +15,7 @@ export default function QuickViewModal({ product, isOpen, onClose, onAddToCart }
   return (
     <div className="quick-view-overlay" onClick={onClose}>
       <div className="quick-view-content" onClick={e => e.stopPropagation()}>
-        <button className="close-quick-view" onClick={onClose}>✕</button>
+        <button className="close-quick-view" onClick={onClose} aria-label="Close quick view">✕</button>
         <div className="qv-image-container">
           <img src={product.image_url} alt={product.name} />
         </div>
