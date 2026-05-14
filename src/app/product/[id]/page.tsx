@@ -35,12 +35,32 @@ export default async function ProductPage({
     }
   }
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    image: product.image_url,
+    description: product.description,
+    offers: {
+      '@type': 'Offer',
+      price: product.price,
+      priceCurrency: 'INR',
+      availability: 'https://schema.org/InStock',
+    },
+  };
+
   return (
-    <ProductClient 
-      product={product} 
-      initialCart={cartItems} 
-      dbConnected={isDbConnected}
-      user={user}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ProductClient 
+        product={product} 
+        initialCart={cartItems} 
+        dbConnected={isDbConnected}
+        user={user}
+      />
+    </>
   );
 }
