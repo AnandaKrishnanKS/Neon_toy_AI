@@ -1,6 +1,7 @@
 import React from 'react';
 import { Product } from '@/lib/types';
 import Link from 'next/link';
+import { createProductSlug } from '@/lib/utils';
 
 interface QuickViewModalProps {
   product: Product;
@@ -35,7 +36,7 @@ export default function QuickViewModal({ product, isOpen, onClose, onAddToCart }
             <button className="add-to-cart-big" onClick={() => { onAddToCart(product); onClose(); }}>
               Add to Cart
             </button>
-            <Link href={`/product/${product.id}`} className="qv-full-details-link">
+            <Link href={`/product/${createProductSlug(product.id, product.name)}`} className="qv-full-details-link">
               View Full Details →
             </Link>
           </div>

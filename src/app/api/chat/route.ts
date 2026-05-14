@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
+import { createProductSlug } from "@/lib/utils";
 
 export async function POST(req: Request) {
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
@@ -19,8 +20,8 @@ export async function POST(req: Request) {
     try {
       const res = await query('SELECT id, name, description, price FROM products');
       if (res.rows && res.rows.length > 0) {
-        const productList = res.rows.map(p => `- [${p.name}](/product/${p.id}) (Price: ₹${p.price})`).join('\n');
-        inventoryContext = `INVENTORY CATALOG:\n${productList}\n\nCRITICAL RULE: You MUST use the EXACT markdown hyperlink provided in the catalog above EVERY SINGLE TIME you mention a toy. Never just type the toy name. Example: If you recommend the Arcade, you MUST type [Retro Arcade Machine](/product/5). Failure to use the exact markdown link is a critical error.`;
+        const productList = res.rows.map(p => `- [${p.name}](/product/${createProductSlug(p.id, p.name)}) (Price: ₹${p.price})`).join('\n');
+        inventoryContext = `INVENTORY CATALOG:\n${productList}\n\nCRITICAL RULE: You MUST use the EXACT markdown hyperlink provided in the catalog above EVERY SINGLE TIME you mention a toy. Never just type the toy name. Example: If you recommend the Arcade, you MUST type [Retro Arcade Machine](/product/retro-arcade-machine-5). Failure to use the exact markdown link is a critical error.`;
       }
     } catch (dbError) {
       console.error("Failed to fetch inventory for chat context", dbError);

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Product } from '@/lib/types';
 import Link from 'next/link';
+import { createProductSlug } from '@/lib/utils';
 
 interface ProductCardProps {
   product: Product;
@@ -12,7 +13,7 @@ export default function ProductCard({ product, onAddToCart, onQuickView }: Produ
   return (
     <div key={product.id} className="product-card tilt-effect">
       <div className="product-image-container">
-        <Link href={`/product/${product.id}`} className="product-link">
+        <Link href={`/product/${createProductSlug(product.id, product.name)}`} className="product-link">
           <img src={product.image_url} alt={product.name} className="product-image" />
         </Link>
         <button 
@@ -23,7 +24,7 @@ export default function ProductCard({ product, onAddToCart, onQuickView }: Produ
         </button>
       </div>
       <div className="product-info">
-        <Link href={`/product/${product.id}`} className="product-link">
+        <Link href={`/product/${createProductSlug(product.id, product.name)}`} className="product-link">
           <h2 className="product-title">{product.name}</h2>
         </Link>
         <p className="product-desc">{product.description}</p>

@@ -2,6 +2,7 @@ import { getProduct, isDbConnected } from '@/lib/db';
 import { getCart, getUser } from '@/app/actions';
 import ProductClient from '@/components/ProductClient';
 import { notFound } from 'next/navigation';
+import { extractIdFromSlug } from '@/lib/utils';
 
 export default async function ProductPage({ 
   params 
@@ -10,7 +11,7 @@ export default async function ProductPage({
 }) {
   // In this version of Next.js, params MUST be awaited
   const { id: idParam } = await params;
-  const id = parseInt(idParam);
+  const id = extractIdFromSlug(idParam);
   
   if (isNaN(id)) {
     notFound();

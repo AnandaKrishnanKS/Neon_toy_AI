@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { query, isDbConnected } from '@/lib/db';
+import { createProductSlug } from '@/lib/utils';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.tottoys.com'; // Fallback to your production domain or localhost
@@ -8,11 +9,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   if (isDbConnected) {
     try {
-      // Fetch all product IDs from the database
-      const res = await query('SELECT id FROM products');
+      // Fetch all product IDs and names from the database
+      const res = await query('SELECT id, name FROM products');
       
       productUrls = res.rows.map((product) => ({
-        url: `${baseUrl}/product/${product.id}`,
+        url: `${baseUrl}/product/${createProductSlug(product.id, product.name)}`,
         lastModified: new Date(),
         changeFrequency: 'weekly',
         priority: 0.8,
