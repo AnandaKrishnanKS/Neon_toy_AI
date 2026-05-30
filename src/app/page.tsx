@@ -1,4 +1,4 @@
-import { getProductsPaged, isDbConnected } from '@/lib/db';
+import { getProductsPaged, isDbConnected, getActiveOffers } from '@/lib/db';
 import StoreClient from '@/components/StoreClient';
 import { getCart, getUser } from './actions';
 
@@ -7,6 +7,7 @@ export default async function Home() {
   let products: any[] = [];
   let totalProducts = 0;
   let cartItems: any[] = [];
+  let offers: any[] = [];
   const user = await getUser();
 
   const pagedRes = await getProductsPaged(0, INITIAL_PAGE_SIZE);
@@ -16,6 +17,7 @@ export default async function Home() {
   if (isDbConnected) {
     const cartRes = await getCart();
     cartItems = cartRes.items || [];
+    offers = await getActiveOffers();
   }
 
   return (
@@ -25,6 +27,7 @@ export default async function Home() {
       dbConnected={isDbConnected}
       user={user}
       totalProducts={totalProducts}
+      offers={offers}
     />
   );
 }

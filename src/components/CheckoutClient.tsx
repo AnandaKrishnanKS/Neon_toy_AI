@@ -27,6 +27,12 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
 
   const totalPayable = cartTotal >= 100 ? cartTotal : cartTotal + 10;
 
+  const totalSavings = cartItems.reduce((sum, item) => {
+    const original = item.original_price || item.price;
+    const saving = original - item.price;
+    return sum + (saving * item.quantity);
+  }, 0);
+
   if (!user) {
     return (
       <div className="checkout-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', padding: '120px 20px' }}>
@@ -261,18 +267,50 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
             <div className="summary-sticky-card">
               <h2 style={{ fontSize: '1.17em', margin: '1em 0', fontWeight: 'bold' }}>Order Summary</h2>
               <div className="summary-items">
-                {cartItems.map(item => (
-                  <div key={item.product_id} className="summary-item">
-                    <span className="item-name">{item.name} x {item.quantity}</span>
-                    <span className="item-price">₹{(item.price * item.quantity).toFixed(2)}</span>
-                  </div>
-                ))}
+                {cartItems.map(item => {
+                  const hasDiscount = item.discount_percentage && item.discount_percentage > 0;
+                  const originalPrice = item.original_price || item.price;
+                  return (
+                    <div key={item.product_id} className="summary-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                      <div className="summary-item-name-info" style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span className="item-name" style={{ fontWeight: 500 }}>{item.name} x {item.quantity}</span>
+                        {hasDiscount && (
+                          <span className="item-offer-badge" style={{ color: 'var(--accent-pink)', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                            {item.badge_text || `${item.discount_percentage}% OFF`}
+                          </span>
+                        )}
+                      </div>
+                      <div className="summary-item-price-info" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        {hasDiscount && (
+                          <span className="item-price-original" style={{ textDecoration: 'line-through', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                            ₹{(originalPrice * item.quantity).toFixed(2)}
+                          </span>
+                        )}
+                        <span className="item-price" style={{ fontWeight: 600, color: 'var(--accent-cyan)' }}>
+                          ₹{(item.price * item.quantity).toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
               <div className="summary-totals">
                 <div className="summary-row">
                   <span>Subtotal</span>
-                  <span>₹{cartTotal.toFixed(2)}</span>
+                  <span>₹{(cartTotal + totalSavings).toFixed(2)}</span>
                 </div>
+                {totalSavings > 0 && (
+                  <div className="summary-row savings" style={{ color: '#4ade80' }}>
+                    <span>Your Savings</span>
+                    <span>-₹{totalSavings.toFixed(2)}</span>
+                  </div>
+                )}
+                {totalSavings > 0 && (
+                  <div className="summary-row">
+                    <span>Discounted Subtotal</span>
+                    <span>₹{cartTotal.toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="summary-row">
                   <span>Shipping</span>
                   <span>{cartTotal >= 100 ? 'FREE' : '₹10.00'}</span>

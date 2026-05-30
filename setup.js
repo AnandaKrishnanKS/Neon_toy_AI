@@ -27,6 +27,45 @@ async function setup() {
       );
     `);
 
+    // Create offers table
+    console.log('Creating offers table...');
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS offers (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL UNIQUE,
+        description TEXT,
+        discount_percentage INTEGER NOT NULL DEFAULT 0,
+        badge_text VARCHAR(50),
+        is_active BOOLEAN DEFAULT true,
+        banner_url TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    // Add offer_id to products
+    await client.query(`
+      ALTER TABLE products ADD COLUMN IF NOT EXISTS offer_id INTEGER REFERENCES offers(id) ON DELETE SET NULL;
+    `);
+
+    // Seed offers
+    console.log('Checking for missing offers...');
+    const offersList = [
+      ['Super Galactic Sale', 'Get stellar discounts on out-of-this-world spacecrafts!', 25, '25% OFF', 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80'],
+      ['Robo Mania', 'High-tech robotic companions and tracks at crazy low prices.', 15, 'HOT DEAL', 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80'],
+      ['STEM Discovery Pack', 'Expand your mind with our science and building blocks collection.', 20, 'STEM DEAL', 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&q=80']
+    ];
+
+    for (const o of offersList) {
+      const checkOffer = await client.query('SELECT id FROM offers WHERE title = $1', [o[0]]);
+      if (checkOffer.rows.length === 0) {
+        await client.query(
+          'INSERT INTO offers (title, description, discount_percentage, badge_text, banner_url) VALUES ($1, $2, $3, $4, $5)',
+          o
+        );
+        console.log(`Inserted offer: ${o[0]}`);
+      }
+    }
+
     // Create cart and cart_items tables
     console.log('Creating cart tables...');
     await client.query(`
@@ -97,6 +136,25 @@ async function setup() {
       }
     }
     console.log('Successfully completed database seeding check!');
+
+    // Link products to offers
+    console.log('Linking products to offers...');
+    const productOfferMappings = {
+      'Galactic Voyager Spaceship': 'Super Galactic Sale',
+      'Robo-Pup Interactive Pet': 'Robo Mania',
+      'Neon Racer Slot Car track': 'Robo Mania',
+      'Star Gazer Telescope': 'STEM Discovery Pack',
+      'Solar System Planetarium': 'STEM Discovery Pack'
+    };
+
+    for (const [prodName, offerTitle] of Object.entries(productOfferMappings)) {
+      await client.query(`
+        UPDATE products 
+        SET offer_id = (SELECT id FROM offers WHERE title = $1)
+        WHERE name = $2 AND (offer_id IS NULL OR offer_id != (SELECT id FROM offers WHERE title = $1))
+      `, [offerTitle, prodName]);
+      console.log(`Linked product "${prodName}" to offer "${offerTitle}"`);
+    }
 
     client.release();
     console.log('✅ Database setup complete!');

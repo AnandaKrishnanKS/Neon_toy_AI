@@ -10,12 +10,23 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onAddToCart, onQuickView }: ProductCardProps) {
+  const hasDiscount = product.discount_percentage && product.discount_percentage > 0;
+  const originalPrice = Number(product.price);
+  const discountedPrice = hasDiscount 
+    ? originalPrice * (1 - product.discount_percentage! / 100) 
+    : originalPrice;
+
   return (
     <div key={product.id} className="product-card tilt-effect">
       <div className="product-image-container">
         <Link href={`/product/${createProductSlug(product.id, product.name)}`} className="product-link">
           <img src={product.image_url} alt={product.name} className="product-image" />
         </Link>
+        {hasDiscount && (
+          <span className="discount-tag-badge">
+            {product.badge_text || `${product.discount_percentage}% OFF`}
+          </span>
+        )}
         <button 
           className="quick-view-btn" 
           onClick={(e) => { e.preventDefault(); onQuickView(product); }}
@@ -29,7 +40,12 @@ export default function ProductCard({ product, onAddToCart, onQuickView }: Produ
         </Link>
         <p className="product-desc">{product.description}</p>
         <div className="product-footer">
-          <span className="product-price">₹{Number(product.price).toFixed(2)}</span>
+          <div className="product-price-wrapper">
+            <span className="product-price">₹{discountedPrice.toFixed(2)}</span>
+            {hasDiscount && (
+              <span className="product-price-original">₹{originalPrice.toFixed(2)}</span>
+            )}
+          </div>
           <button 
             className="add-to-cart-btn"
             onClick={() => onAddToCart(product)}

@@ -4,15 +4,23 @@ export type Product = {
   description: string;
   price: number;
   image_url: string;
+  offer_id?: number | null;
+  offer_title?: string | null;
+  discount_percentage?: number | null;
+  badge_text?: string | null;
+  offer_active?: boolean | null;
 };
 
 export type CartItem = {
   cart_item_id: number;
   product_id: number;
   name: string;
-  price: number;
+  price: number; // Discounted price
+  original_price?: number; // Original price before discount
   image_url: string;
   quantity: number;
+  discount_percentage?: number | null;
+  badge_text?: string | null;
 };
 
 export type User = {

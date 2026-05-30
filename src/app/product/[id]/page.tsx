@@ -3,6 +3,7 @@ import { getCart, getUser } from '@/app/actions';
 import ProductClient from '@/components/ProductClient';
 import { notFound } from 'next/navigation';
 import { extractIdFromSlug } from '@/lib/utils';
+import { CartItem } from '@/lib/types';
 
 export default async function ProductPage({ 
   params 
@@ -24,7 +25,7 @@ export default async function ProductPage({
   }
 
   const user = await getUser();
-  let cartItems = [];
+  let cartItems: CartItem[] = [];
 
   if (isDbConnected) {
     try {

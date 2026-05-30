@@ -42,22 +42,40 @@ export default function CartDrawer({
           {items.length === 0 ? (
             <div className="empty-cart">Your cart is empty.</div>
           ) : (
-            items.map(item => (
-              <div key={item.product_id} className="cart-item">
-                <img src={item.image_url} alt={item.name} className="cart-item-image" />
-                <div className="cart-item-details">
-                  <div className="cart-item-title">{item.name}</div>
-                  <div className="cart-item-price">₹{Number(item.price).toFixed(2)}</div>
-                  <div className="cart-item-actions">
-                    <div className="qty-controls">
-                      <button className="qty-btn" onClick={() => onUpdateQty(item.product_id, item.quantity - 1)} aria-label="Decrease quantity">-</button>
-                      <span>{item.quantity}</span>
-                      <button className="qty-btn" onClick={() => onUpdateQty(item.product_id, item.quantity + 1)} aria-label="Increase quantity">+</button>
+            items.map(item => {
+              const hasDiscount = item.discount_percentage && item.discount_percentage > 0;
+              const originalPrice = item.original_price || item.price;
+              return (
+                <div key={item.product_id} className="cart-item">
+                  <img src={item.image_url} alt={item.name} className="cart-item-image" />
+                  <div className="cart-item-details">
+                    <div className="cart-item-title-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
+                      <div className="cart-item-title">{item.name}</div>
+                      {hasDiscount && (
+                        <span className="cart-item-discount-badge" style={{ background: 'rgba(255, 51, 102, 0.15)', color: 'var(--accent-pink)', fontSize: '0.75rem', padding: '2px 8px', borderRadius: '12px', fontWeight: 'bold', border: '1px solid rgba(255, 51, 102, 0.3)' }}>
+                          {item.badge_text || `${item.discount_percentage}% OFF`}
+                        </span>
+                      )}
+                    </div>
+                    <div className="cart-item-price-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span className="cart-item-price">₹{Number(item.price).toFixed(2)}</span>
+                      {hasDiscount && (
+                        <span className="cart-item-price-original" style={{ textDecoration: 'line-through', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                          ₹{Number(originalPrice).toFixed(2)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="cart-item-actions">
+                      <div className="qty-controls">
+                        <button className="qty-btn" onClick={() => onUpdateQty(item.product_id, item.quantity - 1)} aria-label="Decrease quantity">-</button>
+                        <span>{item.quantity}</span>
+                        <button className="qty-btn" onClick={() => onUpdateQty(item.product_id, item.quantity + 1)} aria-label="Increase quantity">+</button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 

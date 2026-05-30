@@ -11,18 +11,36 @@ if (connectionString) {
 
 export const isDbConnected = !!pool;
 
-type Product = {
+export type Product = {
   id: number;
   name: string;
   description: string;
   price: number;
   image_url: string;
+  offer_id?: number | null;
+  offer_title?: string | null;
+  discount_percentage?: number | null;
+  badge_text?: string | null;
+  offer_active?: boolean | null;
 };
+
+export async function getActiveOffers(): Promise<any[]> {
+  try {
+    const res = await query('SELECT * FROM offers WHERE is_active = true ORDER BY id ASC');
+    return res.rows;
+  } catch (error) {
+    console.error('Error fetching active offers:', error);
+    return [];
+  }
+}
 
 export async function getProductsPaged(offset: number, limit: number): Promise<{ products: Product[], total: number }> {
   const totalRes = await query('SELECT COUNT(*) FROM products');
   const productsRes = await query(
-    'SELECT * FROM products ORDER BY id ASC LIMIT $1 OFFSET $2', 
+    `SELECT p.*, o.title as offer_title, o.discount_percentage, o.badge_text, o.is_active as offer_active
+     FROM products p
+     LEFT JOIN offers o ON p.offer_id = o.id
+     ORDER BY p.id ASC LIMIT $1 OFFSET $2`, 
     [limit, offset]
   );
   return { 
@@ -32,7 +50,13 @@ export async function getProductsPaged(offset: number, limit: number): Promise<{
 }
 
 export async function getProduct(id: number): Promise<Product | null> {
-  const res = await query('SELECT * FROM products WHERE id = $1', [id]);
+  const res = await query(
+    `SELECT p.*, o.title as offer_title, o.discount_percentage, o.badge_text, o.is_active as offer_active
+     FROM products p
+     LEFT JOIN offers o ON p.offer_id = o.id
+     WHERE p.id = $1`, 
+    [id]
+  );
   if (res.rows.length > 0) return res.rows[0];
   return null;
 }

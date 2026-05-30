@@ -27,6 +27,12 @@ export default function ProductClient({
   const [viewers, setViewers] = useState<number>(12);
   const [stock, setStock] = useState<number>(3);
 
+  const hasDiscount = product.discount_percentage && product.discount_percentage > 0;
+  const originalPrice = Number(product.price);
+  const discountedPrice = hasDiscount 
+    ? originalPrice * (1 - product.discount_percentage! / 100) 
+    : originalPrice;
+
   useEffect(() => {
     setViewers(Math.floor(Math.random() * 20) + 5);
     setStock(Math.floor(Math.random() * 8) + 1);
@@ -75,7 +81,8 @@ export default function ProductClient({
           cart_item_id: Math.random(),
           product_id: product.id,
           name: product.name,
-          price: product.price,
+          price: discountedPrice,
+          original_price: originalPrice,
           image_url: product.image_url,
           quantity: qty
         }];
@@ -130,7 +137,23 @@ export default function ProductClient({
                 <span className="badge stock">⏳ Only {stock} left in stock - order soon!</span>
               </div>
 
-              <div className="product-detail-price">₹{Number(product.price).toFixed(2)}</div>
+              <div className="product-detail-price-wrapper">
+                <span className="product-detail-price">₹{discountedPrice.toFixed(2)}</span>
+                {hasDiscount && (
+                  <span className="product-detail-price-original">₹{originalPrice.toFixed(2)}</span>
+                )}
+              </div>
+
+              {hasDiscount && (
+                <div className="special-offer-card">
+                  <span className="special-offer-icon">🎉</span>
+                  <div className="special-offer-details">
+                    <strong>Special Offer: {product.offer_title}</strong>
+                    <p>Get a massive {product.discount_percentage}% discount on this item as part of our promotion!</p>
+                  </div>
+                </div>
+              )}
+
               <div className="product-detail-desc">
                 <p>{product.description}</p>
                 <p>Enjoy free shipping on orders over ₹100 and a 30-day money-back guarantee on all our premium toys.</p>

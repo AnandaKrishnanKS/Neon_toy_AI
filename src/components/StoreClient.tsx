@@ -19,13 +19,15 @@ export default function StoreClient({
   initialCart,
   dbConnected,
   user,
-  totalProducts
+  totalProducts,
+  offers = []
 }: { 
   initialProducts: Product[], 
   initialCart: CartItem[],
   dbConnected: boolean,
   user: User | null,
-  totalProducts: number
+  totalProducts: number,
+  offers?: any[]
 }) {
   const router = useRouter();
   const [cartOpen, setCartOpen] = useState(false);
@@ -39,6 +41,8 @@ export default function StoreClient({
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState("All");
+  const [activeOfferId, setActiveOfferId] = useState<number | null>(null);
+  const [showDeals, setShowDeals] = useState(false);
 
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   
@@ -65,7 +69,7 @@ export default function StoreClient({
   // If the user tries to search or filter, lazily load the rest of the database 
   // so they are searching the entire catalog and not just the first page.
   useEffect(() => {
-    if ((searchQuery !== '' || activeCategory !== 'All') && products.length < totalProducts && dbConnected) {
+    if ((searchQuery !== '' || activeCategory !== 'All' || activeOfferId !== null) && products.length < totalProducts && dbConnected) {
       const fetchRemaining = async () => {
         const res = await getMoreProducts(products.length, totalProducts);
         if (res.products.length > 0) {
@@ -78,7 +82,7 @@ export default function StoreClient({
       };
       fetchRemaining();
     }
-  }, [searchQuery, activeCategory, products.length, totalProducts, dbConnected]);
+  }, [searchQuery, activeCategory, activeOfferId, products.length, totalProducts, dbConnected]);
 
   const handleLogin = async () => {
     router.push('/login');
@@ -141,17 +145,20 @@ export default function StoreClient({
     }
   };
 
-  const isFiltering = searchQuery !== '' || activeCategory !== 'All';
+  const isFiltering = searchQuery !== '' || activeCategory !== 'All' || activeOfferId !== null;
   // If we are filtering, we search against the entire fetched catalog.
   // If not filtering, we artificially cap the view using visibleCount to preserve the paginated feel.
   const displayProducts = isFiltering ? products : products.slice(0, visibleCount);
 
-  // Filter products based on search and dummy categories
+  // Filter products based on search, categories, and active offers
   const filteredProducts = displayProducts.filter(p => {
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           p.description.toLowerCase().includes(searchQuery.toLowerCase());
     
     if (!matchesSearch) return false;
+
+    // Apply offer filter if one is active
+    if (activeOfferId !== null && p.offer_id !== activeOfferId) return false;
     
     if (activeCategory === "All") return true;
 
@@ -193,6 +200,52 @@ export default function StoreClient({
         )}
 
         <Hero />
+
+        {offers && offers.length > 0 && (
+          <div className="deals-toggle-container" style={{ display: 'flex', justifyContent: 'center', marginBottom: '25px' }}>
+            <button 
+              className={`deals-toggle-btn ${showDeals ? 'active' : ''}`}
+              onClick={() => setShowDeals(!showDeals)}
+            >
+              {showDeals ? '⚡ Hide Hot Deals' : '🔥 View Hot Deals & Offers'}
+              <span className="deals-count-indicator">{offers.length}</span>
+            </button>
+          </div>
+        )}
+
+        {offers && offers.length > 0 && (
+          <section className={`deals-section ${showDeals ? 'expanded' : 'collapsed'}`}>
+            <div className="deals-grid">
+              {offers.map(offer => (
+                <div 
+                  key={offer.id} 
+                  className={`deal-card ${activeOfferId === offer.id ? 'active' : ''}`}
+                  onClick={() => setActiveOfferId(activeOfferId === offer.id ? null : offer.id)}
+                  style={{ '--bg-image': `url(${offer.banner_url})` } as React.CSSProperties}
+                >
+                  <div className="deal-card-overlay"></div>
+                  <div className="deal-card-badge">{offer.badge_text || `${offer.discount_percentage}% OFF`}</div>
+                  <div className="deal-card-content">
+                    <h3>{offer.title}</h3>
+                    <p>{offer.description}</p>
+                  </div>
+                  {activeOfferId === offer.id && (
+                    <div className="deal-active-indicator">
+                      <span>Active Filter</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            {activeOfferId !== null && (
+              <div className="clear-deal-filter-container">
+                <button className="clear-deal-filter-btn" onClick={() => setActiveOfferId(null)}>
+                  Showing deals for "{offers.find(o => o.id === activeOfferId)?.title}". Click to view all toys. ✕
+                </button>
+              </div>
+            )}
+          </section>
+        )}
 
         <div className="filters-container">
           <input 

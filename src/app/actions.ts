@@ -59,15 +59,35 @@ export async function getCart() {
 
   try {
     const res = await query(`
-      SELECT ci.id as cart_item_id, p.id as product_id, p.name, p.price, p.image_url, ci.quantity
+      SELECT ci.id as cart_item_id, p.id as product_id, p.name, p.price as original_price, p.image_url, ci.quantity,
+             o.discount_percentage, o.badge_text, o.title as offer_title
       FROM carts c
       JOIN cart_items ci ON c.id = ci.cart_id
       JOIN products p ON ci.product_id = p.id
+      LEFT JOIN offers o ON p.offer_id = o.id
       WHERE c.session_id = $1
       ORDER BY ci.id ASC
     `, [sessionId]);
 
-    return { items: res.rows };
+    const items = res.rows.map(row => {
+      const discount = row.discount_percentage || 0;
+      const originalPrice = parseFloat(row.original_price);
+      const price = discount > 0 ? originalPrice * (1 - discount / 100) : originalPrice;
+      return {
+        cart_item_id: row.cart_item_id,
+        product_id: row.product_id,
+        name: row.name,
+        price: price, // Discounted price for cart total & math
+        original_price: originalPrice,
+        image_url: row.image_url,
+        quantity: row.quantity,
+        discount_percentage: row.discount_percentage,
+        badge_text: row.badge_text,
+        offer_title: row.offer_title
+      };
+    });
+
+    return { items };
   } catch (error) {
     console.error('Error getting cart:', error);
     return { items: [] };
