@@ -57,6 +57,7 @@ export default async function ProductPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <ProductClient 
+        key={product.id}
         product={product} 
         initialCart={cartItems} 
         dbConnected={isDbConnected}

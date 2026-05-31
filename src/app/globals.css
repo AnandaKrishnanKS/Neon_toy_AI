@@ -2230,6 +2230,96 @@ html {
 
 /* Expansion transitions are handled via .deals-section expanded/collapsed classes. */
 
+/* Product Detail Page Image Gallery */
+.product-detail-image.has-gallery {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.product-detail-image-main {
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-detail-image-main img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-detail-image-main:hover img {
+  transform: scale(1.03);
+}
+
+.product-detail-image-thumbnails {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding: 4px 0;
+}
+
+.product-detail-image-thumbnail-btn {
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.product-detail-image-thumbnail-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.product-detail-image-thumbnail-btn:hover {
+  border-color: rgba(0, 210, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.product-detail-image-thumbnail-btn:hover::after {
+  opacity: 0;
+}
+
+.product-detail-image-thumbnail-btn.active {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 12px rgba(0, 210, 255, 0.4);
+}
+
+.product-detail-image-thumbnail-btn.active::after {
+  opacity: 0;
+}
+
+.product-detail-image-thumbnail-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
 
 
 

@@ -26,6 +26,12 @@ export default function ProductClient({
   const [localCart, setLocalCart] = useState<CartItem[]>([]);
   const [viewers, setViewers] = useState<number>(12);
   const [stock, setStock] = useState<number>(3);
+  const [selectedImage, setSelectedImage] = useState(product.image_url);
+
+  const allImages = Array.from(new Set([
+    product.image_url,
+    ...(product.images || [])
+  ].filter(Boolean)));
 
   const hasDiscount = product.discount_percentage && product.discount_percentage > 0;
   const originalPrice = Number(product.price);
@@ -119,8 +125,25 @@ export default function ProductClient({
       <main className="main-content">
         <div className="product-detail-container">
           <div className="product-detail-content">
-            <div className="product-detail-image">
-              <img src={product.image_url} alt={product.name} />
+            <div className={`product-detail-image ${allImages.length > 1 ? 'has-gallery' : ''}`}>
+              <div className="product-detail-image-main">
+                <img src={selectedImage} alt={product.name} />
+              </div>
+              {allImages.length > 1 && (
+                <div className="product-detail-image-thumbnails">
+                  {allImages.map((imgUrl, index) => (
+                    <button
+                      key={index}
+                      className={`product-detail-image-thumbnail-btn ${selectedImage === imgUrl ? 'active' : ''}`}
+                      onClick={() => setSelectedImage(imgUrl)}
+                      type="button"
+                      aria-label={`View product image ${index + 1}`}
+                    >
+                      <img src={imgUrl} alt={`${product.name} preview ${index + 1}`} />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="product-detail-info">
               <nav className="breadcrumb">

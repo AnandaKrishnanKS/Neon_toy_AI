@@ -9,6 +9,7 @@ export type Product = {
   discount_percentage?: number | null;
   badge_text?: string | null;
   offer_active?: boolean | null;
+  images?: string[] | null;
 };
 
 export type CartItem = {
