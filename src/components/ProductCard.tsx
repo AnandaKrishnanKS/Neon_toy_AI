@@ -49,8 +49,10 @@ export default function ProductCard({ product, onAddToCart, onQuickView }: Produ
           <button 
             className="add-to-cart-btn"
             onClick={() => onAddToCart(product)}
+            disabled={product.stock_count !== undefined && product.stock_count <= 0}
+            style={product.stock_count !== undefined && product.stock_count <= 0 ? { opacity: 0.5, cursor: 'not-allowed', background: '#ccc' } : {}}
           >
-            Add to Cart
+            {product.stock_count !== undefined && product.stock_count <= 0 ? 'Out of Stock' : 'Add to Cart'}
           </button>
         </div>
       </div>

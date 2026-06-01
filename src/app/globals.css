@@ -1830,6 +1830,12 @@ html {
   border: 1px solid rgba(244, 63, 94, 0.3);
 }
 
+.order-status-badge.refunded {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
 .cancel-order-btn {
   background: rgba(244, 63, 94, 0.1);
   color: #f43f5e;
@@ -1863,6 +1869,17 @@ html {
   border-left: 4px solid #f43f5e;
 }
 
+.refunded-message {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 25px;
+  background: rgba(16, 185, 129, 0.05);
+  border-radius: 12px;
+  margin: 30px 0;
+  border-left: 4px solid #10b981;
+}
+
 .cancelled-icon {
   font-size: 1.5rem;
 }
@@ -1872,9 +1889,19 @@ html {
   font-weight: 500;
 }
 
+.refunded-message p {
+  color: #10b981;
+  font-weight: 500;
+}
+
 .order-tracking-card.cancelled {
   opacity: 0.8;
   border-color: rgba(244, 63, 94, 0.2);
+}
+
+.order-tracking-card.refunded {
+  opacity: 0.8;
+  border-color: rgba(16, 185, 129, 0.2);
 }
 
 .order-total-info {

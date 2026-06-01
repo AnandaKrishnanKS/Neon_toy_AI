@@ -71,12 +71,25 @@ export default function OrdersClient({ user, orders }: { user: User, orders: Ord
             orders.map(order => {
               const currentStep = getStatusStep(order.status);
               const isCancelled = order.status.toLowerCase() === 'cancelled';
+              const isRefunded = order.status.toLowerCase() === 'refunded';
               const date = new Date(order.created_at).toLocaleDateString('en-US', {
                 month: 'long', day: 'numeric', year: 'numeric'
               });
 
+              // Helper to safely extract payment method
+              let isPaidOrder = false;
+              try {
+                const details = typeof order.shipping_details === 'string'
+                  ? JSON.parse(order.shipping_details)
+                  : order.shipping_details;
+                const method = (details?.payment_method || 'COD').toUpperCase();
+                isPaidOrder = method !== 'COD';
+              } catch (e) {
+                isPaidOrder = false;
+              }
+
               return (
-                <div key={order.id} className={`order-tracking-card ${isCancelled ? 'cancelled' : ''}`}>
+                <div key={order.id} className={`order-tracking-card ${isCancelled ? 'cancelled' : ''} ${isRefunded ? 'refunded' : ''}`}>
                   <div className="order-card-header">
                     <div className="order-meta">
                       <span className="order-id">Order #NT-{order.id}</span>
@@ -98,7 +111,7 @@ export default function OrdersClient({ user, orders }: { user: User, orders: Ord
                     </div>
                   </div>
 
-                  {!isCancelled ? (
+                  {!isCancelled && !isRefunded ? (
                     <div className="tracking-timeline">
                       <div className={`step ${currentStep >= 1 ? 'active' : ''}`}>
                         <div className="step-dot"></div>
@@ -120,10 +133,18 @@ export default function OrdersClient({ user, orders }: { user: User, orders: Ord
                         <span className="step-label">Delivered</span>
                       </div>
                     </div>
+                  ) : isRefunded ? (
+                    <div className="refunded-message">
+                      <span className="cancelled-icon">💰</span>
+                      <p>This order was refunded.</p>
+                    </div>
                   ) : (
                     <div className="cancelled-message">
                       <span className="cancelled-icon">🚫</span>
-                      <p>This order was cancelled and will not be shipped.</p>
+                      <p>
+                        This order was cancelled and will not be shipped.
+                        {isPaidOrder && " Refund will be initiated soon. If not, contact us."}
+                      </p>
                     </div>
                   )}
 

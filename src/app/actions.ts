@@ -22,6 +22,38 @@ export async function addToCart(productId: number, quantity: number = 1) {
   }
 
   try {
+    // Check product stock count
+    const productRes = await query('SELECT stock_count, name FROM products WHERE id = $1', [productId]);
+    if (productRes.rowCount === 0) {
+      return { success: false, error: 'Product not found.' };
+    }
+    const stockCount = productRes.rows[0].stock_count ?? 0;
+    const productName = productRes.rows[0].name;
+
+    // Fetch current quantity in user's cart
+    let currentCartQty = 0;
+    const cartItemRes = await query(
+      `SELECT ci.quantity FROM cart_items ci
+       JOIN carts c ON ci.cart_id = c.id
+       WHERE c.session_id = $1 AND ci.product_id = $2`,
+      [sessionId, productId]
+    );
+    if (cartItemRes.rowCount && cartItemRes.rowCount > 0) {
+      currentCartQty = cartItemRes.rows[0].quantity;
+    }
+
+    if (currentCartQty + quantity > stockCount) {
+      if (stockCount <= 0) {
+        return { success: false, error: `Sorry, "${productName}" is out of stock.` };
+      }
+      const remainingAllowed = stockCount - currentCartQty;
+      if (remainingAllowed <= 0) {
+        return { success: false, error: `You already have all available stock (${stockCount}) of "${productName}" in your cart.` };
+      } else {
+        return { success: false, error: `Only ${stockCount} units of "${productName}" are available. You can add at most ${remainingAllowed} more.` };
+      }
+    }
+
     // Upsert cart
     const cartRes = await query(
       'INSERT INTO carts (session_id) VALUES ($1) ON CONFLICT (session_id) DO UPDATE SET session_id = EXCLUDED.session_id RETURNING id',
@@ -95,25 +127,37 @@ export async function getCart() {
 }
 
 export async function updateCartItemQuantity(productId: number, quantity: number) {
-  if (!isDbConnected) return { success: false };
+  if (!isDbConnected) return { success: false, error: 'Database not connected.' };
   
   const cookieStore = await cookies();
   const sessionId = cookieStore.get('session_id')?.value;
-  if (!sessionId) return { success: false };
+  if (!sessionId) return { success: false, error: 'Session not found.' };
 
   try {
     const cartRes = await query('SELECT id FROM carts WHERE session_id = $1', [sessionId]);
-    if (cartRes.rowCount === 0) return { success: false };
+    if (cartRes.rowCount === 0) return { success: false, error: 'Cart not found.' };
     const cartId = cartRes.rows[0].id;
 
     if (quantity <= 0) {
       await query('DELETE FROM cart_items WHERE cart_id = $1 AND product_id = $2', [cartId, productId]);
     } else {
+      // Check stock count before updating
+      const productRes = await query('SELECT stock_count, name FROM products WHERE id = $1', [productId]);
+      if (productRes.rowCount === 0) {
+        return { success: false, error: 'Product not found.' };
+      }
+      const stockCount = productRes.rows[0].stock_count ?? 0;
+      const productName = productRes.rows[0].name;
+
+      if (quantity > stockCount) {
+        return { success: false, error: `Only ${stockCount} units of "${productName}" are available in stock.` };
+      }
+
       await query('UPDATE cart_items SET quantity = $1 WHERE cart_id = $2 AND product_id = $3', [quantity, cartId, productId]);
     }
     return { success: true };
-  } catch (error) {
-    return { success: false };
+  } catch (error: any) {
+    return { success: false, error: error.message || 'Database error' };
   }
 }
 
@@ -193,6 +237,32 @@ export async function placeOrder(orderData: {
 }) {
   if (isDbConnected) {
     try {
+      await query('BEGIN');
+
+      for (const item of orderData.items) {
+        const productId = item.product_id;
+        const buyQty = item.quantity;
+
+        // Fetch current stock and lock the row to avoid race conditions
+        const res = await query('SELECT stock_count, name FROM products WHERE id = $1 FOR UPDATE', [productId]);
+        if (res.rowCount === 0) {
+          throw new Error(`Product with ID ${productId} not found.`);
+        }
+
+        const currentStock = res.rows[0].stock_count ?? 0;
+        const productName = res.rows[0].name;
+
+        if (currentStock < buyQty) {
+          throw new Error(`Sorry, "${productName}" does not have enough stock. Available: ${currentStock}, Requested: ${buyQty}`);
+        }
+
+        // Decrement stock
+        await query(
+          'UPDATE products SET stock_count = stock_count - $1 WHERE id = $2',
+          [buyQty, productId]
+        );
+      }
+
       await query(`
         INSERT INTO orders (user_email, total_amount, items, shipping_details)
         VALUES ($1, $2, $3, $4)
@@ -202,10 +272,13 @@ export async function placeOrder(orderData: {
         JSON.stringify(orderData.items), 
         JSON.stringify(orderData.shipping_details)
       ]);
+
+      await query('COMMIT');
       return { success: true };
-    } catch (e) {
+    } catch (e: any) {
+      await query('ROLLBACK');
       console.error('Place Order Error:', e);
-      return { success: false, error: 'Database error' };
+      return { success: false, error: e.message || 'Database error' };
     }
   }
   // If no DB, we just simulate success

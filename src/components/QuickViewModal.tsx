@@ -39,7 +39,11 @@ export default function QuickViewModal({ product, isOpen, onClose, onAddToCart }
           </div>
           <div className="scarcity-badges">
             <span className="badge fire">🔥 High Demand</span>
-            <span className="badge stock">⏳ Limited Stock</span>
+            {product.stock_count !== undefined && product.stock_count <= 0 ? (
+              <span className="badge stock out-of-stock" style={{ backgroundColor: 'rgba(255, 51, 102, 0.1)', color: 'var(--accent-pink)', border: '1px solid rgba(255, 51, 102, 0.2)' }}>⏳ Out of stock</span>
+            ) : (
+              <span className="badge stock">⏳ Limited Stock ({product.stock_count !== undefined ? product.stock_count : 'available'})</span>
+            )}
           </div>
           <div className="qv-price-wrapper">
             <span className="qv-price">₹{discountedPrice.toFixed(2)}</span>
@@ -49,8 +53,13 @@ export default function QuickViewModal({ product, isOpen, onClose, onAddToCart }
           </div>
           <p className="qv-desc">{product.description}</p>
           <div className="qv-actions">
-            <button className="add-to-cart-big" onClick={() => { onAddToCart(product); onClose(); }}>
-              Add to Cart
+            <button 
+              className="add-to-cart-big" 
+              onClick={() => { onAddToCart(product); onClose(); }}
+              disabled={product.stock_count !== undefined && product.stock_count <= 0}
+              style={product.stock_count !== undefined && product.stock_count <= 0 ? { opacity: 0.5, cursor: 'not-allowed', background: '#ccc' } : {}}
+            >
+              {product.stock_count !== undefined && product.stock_count <= 0 ? 'Out of Stock' : 'Add to Cart'}
             </button>
             <Link href={`/product/${createProductSlug(product.id, product.name)}`} className="qv-full-details-link">
               View Full Details →

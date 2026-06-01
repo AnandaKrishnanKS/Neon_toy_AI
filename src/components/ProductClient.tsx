@@ -25,7 +25,7 @@ export default function ProductClient({
   const [lastScrollY, setLastScrollY] = useState(0);
   const [localCart, setLocalCart] = useState<CartItem[]>([]);
   const [viewers, setViewers] = useState<number>(12);
-  const [stock, setStock] = useState<number>(3);
+  const [stock, setStock] = useState<number>(product.stock_count !== undefined ? product.stock_count : 5);
   const [selectedImage, setSelectedImage] = useState(product.image_url);
 
   const allImages = Array.from(new Set([
@@ -41,8 +41,10 @@ export default function ProductClient({
 
   useEffect(() => {
     setViewers(Math.floor(Math.random() * 20) + 5);
-    setStock(Math.floor(Math.random() * 8) + 1);
-  }, []);
+    if (!dbConnected) {
+      setStock(Math.floor(Math.random() * 8) + 1);
+    }
+  }, [dbConnected]);
 
   const itemsToRender = dbConnected ? cartItems : localCart;
   const cartTotal = itemsToRender.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -70,11 +72,22 @@ export default function ProductClient({
       if (res.success) {
         const updated = await getCart();
         setCartItems(updated.items || []);
+        setStock(prev => Math.max(0, prev - qty));
         setCartOpen(true);
       } else {
         alert('Error adding to cart: ' + res.error);
       }
     } else {
+      const stockLimit = product.stock_count !== undefined ? product.stock_count : 5;
+      let existingQty = 0;
+      const existingItem = localCart.find(item => item.product_id === product.id);
+      if (existingItem) {
+        existingQty = existingItem.quantity;
+      }
+      if (existingQty + qty > stockLimit) {
+        alert(`Cannot add more items. Only ${stockLimit} units are available.`);
+        return;
+      }
       setLocalCart(current => {
         const existing = current.find(item => item.product_id === product.id);
         if (existing) {
@@ -93,6 +106,7 @@ export default function ProductClient({
           quantity: qty
         }];
       });
+      setStock(prev => Math.max(0, prev - qty));
       setCartOpen(true);
     }
   };
@@ -103,10 +117,25 @@ export default function ProductClient({
       if (res.success) {
         const updated = await getCart();
         setCartItems(updated.items || []);
+        if (productId === product.id) {
+          const maxStock = product.stock_count !== undefined ? product.stock_count : 5;
+          setStock(Math.max(0, maxStock - (newQty > 0 ? newQty : 0)));
+        }
+      } else {
+        alert(res.error || 'Failed to update quantity');
       }
     } else {
+      const stockLimit = product.stock_count !== undefined ? product.stock_count : 5;
+      if (productId === product.id && newQty > stockLimit) {
+        alert(`Cannot update quantity. Only ${stockLimit} units are available in stock.`);
+        return;
+      }
       setLocalCart(current => {
-        if (newQty <= 0) return current.filter(item => item.product_id !== productId);
+        if (newQty <= 0) {
+          if (productId === product.id) setStock(stockLimit);
+          return current.filter(item => item.product_id !== productId);
+        }
+        if (productId === product.id) setStock(stockLimit - newQty);
         return current.map(item => item.product_id === productId ? { ...item, quantity: newQty } : item);
       });
     }
@@ -157,7 +186,11 @@ export default function ProductClient({
 
               <div className="scarcity-badges">
                 <span className="badge fire">🔥 {viewers} people are looking at this</span>
-                <span className="badge stock">⏳ Only {stock} left in stock - order soon!</span>
+                {stock <= 0 ? (
+                  <span className="badge stock out-of-stock" style={{ backgroundColor: 'rgba(255, 51, 102, 0.1)', color: 'var(--accent-pink)', border: '1px solid rgba(255, 51, 102, 0.2)' }}>⏳ Out of stock</span>
+                ) : (
+                  <span className="badge stock">⏳ Only {stock} left in stock - order soon!</span>
+                )}
               </div>
 
               <div className="product-detail-price-wrapper">
@@ -182,8 +215,13 @@ export default function ProductClient({
                 <p>Enjoy free shipping on orders over ₹100 and a 30-day money-back guarantee on all our premium toys.</p>
               </div>
               <div className="product-actions">
-                <button className="add-to-cart-big" onClick={() => handleAddToCart(1)}>
-                  Add to Cart
+                <button 
+                  className="add-to-cart-big" 
+                  onClick={() => handleAddToCart(1)}
+                  disabled={stock <= 0}
+                  style={stock <= 0 ? { opacity: 0.5, cursor: 'not-allowed', background: '#ccc' } : {}}
+                >
+                  {stock <= 0 ? 'Out of Stock' : 'Add to Cart'}
                 </button>
               </div>
               <div className="product-meta">

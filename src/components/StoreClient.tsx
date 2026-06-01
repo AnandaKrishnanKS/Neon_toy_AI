@@ -119,6 +119,16 @@ export default function StoreClient({
         alert('Error adding to cart: ' + res.error);
       }
     } else {
+      const stockLimit = product.stock_count !== undefined ? product.stock_count : 5;
+      let existingQty = 0;
+      const existingItem = localCart.find(item => item.product_id === product.id);
+      if (existingItem) {
+        existingQty = existingItem.quantity;
+      }
+      if (existingQty + 1 > stockLimit) {
+        alert(`Cannot add more items. Only ${stockLimit} units are available.`);
+        return;
+      }
       setLocalCart(current => {
         const existing = current.find(item => item.product_id === product.id);
         if (existing) {
@@ -136,8 +146,16 @@ export default function StoreClient({
       if (res.success) {
         const updated = await getCart();
         setCartItems(updated.items || []);
+      } else {
+        alert(res.error || 'Failed to update quantity');
       }
     } else {
+      const p = products.find(prod => prod.id === productId);
+      const stockLimit = p && p.stock_count !== undefined ? p.stock_count : 5;
+      if (newQty > stockLimit) {
+        alert(`Cannot update quantity. Only ${stockLimit} units are available in stock.`);
+        return;
+      }
       setLocalCart(current => {
         if (newQty <= 0) return current.filter(item => item.product_id !== productId);
         return current.map(item => item.product_id === productId ? { ...item, quantity: newQty } : item);

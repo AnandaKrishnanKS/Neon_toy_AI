@@ -94,7 +94,7 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
         await clearCart();
         setOrderId(Math.floor(Math.random() * 100000) + 10000);
       } else {
-        alert('Failed to place order. Please try again.');
+        alert(res.error || 'Failed to place order. Please try again.');
       }
       setIsPlacing(false);
     } else {
@@ -143,9 +143,13 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
                 payment_id: response.razorpay_payment_id
               }
             };
-            await placeOrder(orderData);
-            await clearCart();
-            setOrderId(Math.floor(Math.random() * 100000) + 10000);
+            const placeRes = await placeOrder(orderData);
+            if (placeRes.success) {
+              await clearCart();
+              setOrderId(Math.floor(Math.random() * 100000) + 10000);
+            } else {
+              alert(placeRes.error || "Failed to place order. Please contact support.");
+            }
           } else {
             alert("Payment verification failed. Please contact support.");
           }

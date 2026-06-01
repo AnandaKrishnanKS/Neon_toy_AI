@@ -10,6 +10,7 @@ export type Product = {
   badge_text?: string | null;
   offer_active?: boolean | null;
   images?: string[] | null;
+  stock_count?: number;
 };
 
 export type CartItem = {
