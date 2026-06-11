@@ -1254,6 +1254,9 @@ html {
 }
 
 @media (max-width: 768px) {
+  .quick-view-btn {
+    display: none !important;
+  }
   .quick-view-content {
     grid-template-columns: 1fr;
     max-height: 90vh;
