@@ -68,7 +68,7 @@ export default function Error({
         </p>
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => reset()}
             style={{
               padding: '8px 24px',
               backgroundColor: '#1877f2',
@@ -83,7 +83,7 @@ export default function Error({
             onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#166fe5'}
             onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#1877f2'}
           >
-            Reload Page
+            Try Again
           </button>
           
           <button

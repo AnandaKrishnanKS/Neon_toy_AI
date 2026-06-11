@@ -1,7 +1,6 @@
 import { getUser, getCart } from '../actions';
 import { redirect } from 'next/navigation';
 import CheckoutClient from '@/components/CheckoutClient';
-import { isDbConnected } from '@/lib/db';
 
 export default async function CheckoutPage() {
   const user = await getUser();

@@ -37,7 +37,7 @@ export default function Navbar({
             </a>
           </>
         ) : (
-          <a href="/login" className="nav-login-btn" style={{ textDecoration: 'none' }}>Log In</a>
+          <button onClick={onLogin} className="nav-login-btn">Log In</button>
         )}
 
         <button className="nav-cart-btn" onClick={onOpenCart} aria-label="Shopping Cart">

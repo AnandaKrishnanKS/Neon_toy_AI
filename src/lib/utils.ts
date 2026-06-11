@@ -25,7 +25,7 @@ export function optimizeUnsplashUrl(url: string, width: number = 500, quality: n
     urlObj.searchParams.set('w', width.toString());
     urlObj.searchParams.set('q', quality.toString());
     return urlObj.toString();
-  } catch (e) {
+  } catch {
     return url;
   }
 }

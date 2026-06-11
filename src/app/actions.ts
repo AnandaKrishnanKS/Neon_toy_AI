@@ -410,7 +410,7 @@ export async function getUser() {
     
     // In case there is no DB connected but a valid token exists
     return { email, name: email.split('@')[0], avatar: 'https://i.pravatar.cc/150' };
-  } catch (e) {
+  } catch {
     return null;
   }
 }

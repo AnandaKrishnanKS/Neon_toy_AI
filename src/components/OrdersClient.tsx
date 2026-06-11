@@ -61,7 +61,7 @@ export default function OrdersClient({ user, orders }: { user: User, orders: Ord
       <main className="orders-content">
         <header className="page-header">
           <h1>Track Your Orders</h1>
-          <p>Real-time delivery status for your toy collection.</p>
+          <p>Welcome back, {user.name}! Real-time delivery status for your toy collection.</p>
         </header>
 
         <div className="orders-list">
@@ -89,7 +89,7 @@ export default function OrdersClient({ user, orders }: { user: User, orders: Ord
                   : order.shipping_details;
                 const method = (details?.payment_method || 'COD').toUpperCase();
                 isPaidOrder = method !== 'COD';
-              } catch (e) {
+              } catch {
                 isPaidOrder = false;
               }
 
