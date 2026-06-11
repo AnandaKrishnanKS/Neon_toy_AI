@@ -385,6 +385,7 @@ export async function cancelOrder(orderId: number) {
 export async function logout() {
   const cookieStore = await cookies();
   cookieStore.delete('session');
+  cookieStore.delete('session_id');
   return { success: true };
 }
 
