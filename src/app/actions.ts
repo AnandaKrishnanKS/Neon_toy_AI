@@ -501,3 +501,75 @@ export async function updateOrderStatus(orderId: number, newStatus: string) {
     return { success: false, error: error.message || 'Database error' };
   }
 }
+
+export async function toggleSaveProduct(productId: number) {
+  const user = await getUser();
+  if (!user || !user.email) {
+    return { success: false, error: 'Please log in to save products.' };
+  }
+
+  if (!isDbConnected) {
+    return { success: false, error: 'Database is not connected.' };
+  }
+
+  try {
+    const checkRes = await query('SELECT id FROM saved_products WHERE user_email = $1 AND product_id = $2', [user.email, productId]);
+    if (checkRes.rows.length > 0) {
+      await query('DELETE FROM saved_products WHERE user_email = $1 AND product_id = $2', [user.email, productId]);
+      return { success: true, saved: false };
+    } else {
+      await query('INSERT INTO saved_products (user_email, product_id) VALUES ($1, $2)', [user.email, productId]);
+      return { success: true, saved: true };
+    }
+  } catch (error: any) {
+    console.error('Error toggling saved product:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function getSavedProducts() {
+  const user = await getUser();
+  if (!user || !user.email) {
+    return { success: true, items: [] };
+  }
+
+  if (!isDbConnected) {
+    return { success: true, items: [] };
+  }
+
+  try {
+    const res = await query(
+      `SELECT p.id, p.name, p.price, p.image_url, p.description, p.stock_count,
+              o.discount_percentage, o.badge_text, o.title as offer_title
+       FROM saved_products sp
+       JOIN products p ON sp.product_id = p.id
+       LEFT JOIN offers o ON p.offer_id = o.id
+       WHERE sp.user_email = $1
+       ORDER BY sp.created_at DESC`,
+      [user.email]
+    );
+
+    const items = res.rows.map(row => {
+      const discount = row.discount_percentage || 0;
+      const originalPrice = parseFloat(row.price);
+      const price = discount > 0 ? originalPrice * (1 - discount / 100) : originalPrice;
+      return {
+        id: row.id,
+        name: row.name,
+        price: price,
+        original_price: originalPrice,
+        image_url: row.image_url,
+        description: row.description,
+        stock_count: row.stock_count,
+        discount_percentage: row.discount_percentage,
+        badge_text: row.badge_text,
+        offer_title: row.offer_title
+      };
+    });
+
+    return { success: true, items };
+  } catch (error: any) {
+    console.error('Error fetching saved products:', error);
+    return { success: false, error: error.message, items: [] };
+  }
+}

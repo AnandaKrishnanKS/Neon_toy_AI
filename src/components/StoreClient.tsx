@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { addToCart, getCart, updateCartItemQuantity, getMoreProducts } from '@/app/actions';
+import { addToCart, getCart, updateCartItemQuantity, getMoreProducts, toggleSaveProduct, getSavedProducts } from '@/app/actions';
 import { useRouter } from 'next/navigation';
 import { Product, CartItem, User } from '@/lib/types';
 import Navbar from './Navbar';
@@ -35,15 +35,17 @@ export default function StoreClient({
   const [user, setUser] = useState<User | null>(initialUser);
   const [headerVisible, setHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [savedProducts, setSavedProducts] = useState<any[]>([]);
 
   useEffect(() => {
     if (!dbConnected) return;
     let active = true;
     const load = async () => {
       try {
-        const [cartRes, userRes] = await Promise.all([
+        const [cartRes, userRes, savedRes] = await Promise.all([
           fetch('/api/cart').then(r => r.json()),
-          fetch('/api/user').then(r => r.json())
+          fetch('/api/user').then(r => r.json()),
+          getSavedProducts()
         ]);
         if (!active) return;
         setTimeout(() => {
@@ -51,6 +53,9 @@ export default function StoreClient({
             setCartItems(cartRes.items);
           }
           setUser(userRes);
+          if (savedRes && savedRes.success) {
+            setSavedProducts(savedRes.items);
+          }
         }, 0);
       } catch (e) {
         console.error('Failed to fetch user/cart data:', e);
@@ -68,15 +73,19 @@ export default function StoreClient({
       if (event.persisted) {
         const load = async () => {
           try {
-            const [cartRes, userRes] = await Promise.all([
+            const [cartRes, userRes, savedRes] = await Promise.all([
               fetch('/api/cart').then(r => r.json()),
-              fetch('/api/user').then(r => r.json())
+              fetch('/api/user').then(r => r.json()),
+              getSavedProducts()
             ]);
             setTimeout(() => {
               if (cartRes && cartRes.items) {
                 setCartItems(cartRes.items);
               }
               setUser(userRes);
+              if (savedRes && savedRes.success) {
+                setSavedProducts(savedRes.items);
+              }
             }, 0);
           } catch (e) {
             console.error('Failed to fetch user/cart data:', e);
@@ -140,6 +149,45 @@ export default function StoreClient({
 
   const handleLogin = async () => {
     router.push('/login');
+  };
+
+  const handleToggleSave = async (productId: number) => {
+    if (!user) {
+      alert('Please log in to save products.');
+      router.push('/login');
+      return;
+    }
+
+    const res = await toggleSaveProduct(productId);
+    if (res.success) {
+      const savedRes = await getSavedProducts();
+      if (savedRes.success) {
+        setSavedProducts(savedRes.items);
+      }
+    } else {
+      alert(res.error || 'Failed to update wishlist');
+    }
+  };
+
+  const handleAddSavedToCart = async (product: Product) => {
+    await handleAddToCart(product);
+    const res = await toggleSaveProduct(product.id);
+    if (res.success) {
+      const savedRes = await getSavedProducts();
+      if (savedRes.success) {
+        setSavedProducts(savedRes.items);
+      }
+    }
+  };
+
+  const handleUnsaveProduct = async (productId: number) => {
+    const res = await toggleSaveProduct(productId);
+    if (res.success) {
+      const savedRes = await getSavedProducts();
+      if (savedRes.success) {
+        setSavedProducts(savedRes.items);
+      }
+    }
   };
 
   const handleLoadMore = async () => {
@@ -348,6 +396,8 @@ export default function StoreClient({
               onAddToCart={handleAddToCart} 
               onQuickView={setQuickViewProduct}
               priority={index < 2}
+              isSaved={savedProducts.some(p => p.id === product.id)}
+              onToggleSave={handleToggleSave}
             />
           ))}
           {filteredProducts.length === 0 && (
@@ -376,6 +426,9 @@ export default function StoreClient({
         items={itemsToRender} 
         onUpdateQty={handleUpdateQty} 
         total={cartTotal}
+        savedItems={dbConnected ? savedProducts : []}
+        onAddSavedToCart={handleAddSavedToCart}
+        onUnsaveProduct={handleUnsaveProduct}
       />
 
       {quickViewProduct && (
@@ -384,6 +437,8 @@ export default function StoreClient({
           isOpen={true} 
           onClose={() => setQuickViewProduct(null)} 
           onAddToCart={handleAddToCart}
+          isSaved={savedProducts.some(p => p.id === quickViewProduct.id)}
+          onToggleSave={handleToggleSave}
         />
       )}
     </>

@@ -8,9 +8,18 @@ interface ProductCardProps {
   onAddToCart: (product: Product) => void;
   onQuickView: (product: Product) => void;
   priority?: boolean;
+  isSaved?: boolean;
+  onToggleSave?: (productId: number) => void;
 }
 
-export default function ProductCard({ product, onAddToCart, onQuickView, priority = false }: ProductCardProps) {
+export default function ProductCard({ 
+  product, 
+  onAddToCart, 
+  onQuickView, 
+  priority = false,
+  isSaved = false,
+  onToggleSave
+}: ProductCardProps) {
   const hasDiscount = product.discount_percentage && product.discount_percentage > 0;
   const originalPrice = Number(product.price);
   const discountedPrice = hasDiscount 
@@ -39,6 +48,44 @@ export default function ProductCard({ product, onAddToCart, onQuickView, priorit
           <span className="discount-tag-badge">
             {product.badge_text || `${product.discount_percentage}% OFF`}
           </span>
+        )}
+        {onToggleSave && (
+          <button 
+            className="wishlist-toggle-btn"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleSave(product.id); }}
+            style={{
+              position: 'absolute',
+              top: '12px',
+              right: '12px',
+              zIndex: 10,
+              background: 'rgba(15, 17, 26, 0.6)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '50%',
+              width: '36px',
+              height: '36px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: isSaved ? 'var(--accent-pink)' : '#e4e6eb',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              backdropFilter: 'blur(4px)',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'scale(1.1)';
+              e.currentTarget.style.backgroundColor = 'rgba(15, 17, 26, 0.8)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.backgroundColor = 'rgba(15, 17, 26, 0.6)';
+            }}
+            title={isSaved ? "Remove from Saved" : "Save for Later"}
+            aria-label={isSaved ? "Remove from Saved" : "Save for Later"}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </button>
         )}
         <button 
           className="quick-view-btn" 

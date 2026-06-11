@@ -7,6 +7,9 @@ interface CartDrawerProps {
   items: CartItem[];
   onUpdateQty: (productId: number, newQty: number) => void;
   total: number;
+  savedItems?: any[];
+  onAddSavedToCart?: (product: any) => void;
+  onUnsaveProduct?: (productId: number) => void;
 }
 
 export default function CartDrawer({ 
@@ -14,7 +17,10 @@ export default function CartDrawer({
   onClose, 
   items, 
   onUpdateQty, 
-  total 
+  total,
+  savedItems = [],
+  onAddSavedToCart,
+  onUnsaveProduct
 }: CartDrawerProps) {
   return (
     <div className={`cart-overlay ${isOpen ? 'open' : ''}`} onClick={onClose}>
@@ -76,6 +82,74 @@ export default function CartDrawer({
                 </div>
               );
             })
+          )}
+
+          {savedItems && savedItems.length > 0 && (
+            <div className="saved-items-section" style={{ marginTop: '2rem', borderTop: '1px solid var(--glass-border)', paddingTop: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.2rem', marginBottom: '1.2rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--accent-pink)" stroke="var(--accent-pink)">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                Saved for Later ({savedItems.length})
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                {savedItems.map(item => (
+                  <div key={item.id} className="cart-item" style={{ borderStyle: 'dashed', borderColor: 'var(--glass-border)', background: 'rgba(255, 255, 255, 0.02)' }}>
+                    <img src={item.image_url} alt={item.name} className="cart-item-image" />
+                    <div className="cart-item-details">
+                      <div className="cart-item-title-wrapper" style={{ display: 'flex', justifyContent: 'space-between', gap: '8px' }}>
+                        <div className="cart-item-title" style={{ fontSize: '0.95rem', fontWeight: '600' }}>{item.name}</div>
+                      </div>
+                      <div className="cart-item-price-wrapper" style={{ margin: '4px 0' }}>
+                        <span className="cart-item-price" style={{ color: 'var(--accent-cyan)', fontWeight: 'bold' }}>₹{Number(item.price).toFixed(2)}</span>
+                      </div>
+                      <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                        {onAddSavedToCart && (
+                          <button 
+                            onClick={() => onAddSavedToCart(item)}
+                            style={{
+                              padding: '6px 12px',
+                              backgroundColor: 'rgba(0, 210, 255, 0.15)',
+                              color: 'var(--accent-cyan)',
+                              border: 'none',
+                              borderRadius: '6px',
+                              fontWeight: '600',
+                              fontSize: '0.8rem',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s',
+                            }}
+                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 210, 255, 0.25)'}
+                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 210, 255, 0.15)'}
+                          >
+                            Add to Cart
+                          </button>
+                        )}
+                        {onUnsaveProduct && (
+                          <button 
+                            onClick={() => onUnsaveProduct(item.id)}
+                            style={{
+                              padding: '6px 12px',
+                              backgroundColor: 'rgba(255, 51, 102, 0.1)',
+                              color: 'var(--accent-pink)',
+                              border: 'none',
+                              borderRadius: '6px',
+                              fontWeight: '600',
+                              fontSize: '0.8rem',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s',
+                            }}
+                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 51, 102, 0.2)'}
+                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 51, 102, 0.1)'}
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
         </div>
 

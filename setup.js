@@ -208,6 +208,18 @@ If you have any questions about these Terms, please contact us at support@tottoy
       console.log('Seeded default terms and conditions.');
     }
 
+    // Create saved_products table
+    console.log('Creating saved_products table...');
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS saved_products (
+        id SERIAL PRIMARY KEY,
+        user_email VARCHAR(255) NOT NULL,
+        product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(user_email, product_id)
+      );
+    `);
+
     client.release();
     console.log('✅ Database setup complete!');
     process.exit(0);

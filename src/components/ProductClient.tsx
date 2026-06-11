@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { addToCart, getCart, updateCartItemQuantity } from '@/app/actions';
+import { addToCart, getCart, updateCartItemQuantity, toggleSaveProduct, getSavedProducts } from '@/app/actions';
 import { useRouter } from 'next/navigation';
 import { Product, CartItem, User } from '@/lib/types';
 import Navbar from './Navbar';
@@ -24,15 +24,17 @@ export default function ProductClient({
   const [user, setUser] = useState<User | null>(initialUser);
   const [headerVisible, setHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [savedProducts, setSavedProducts] = useState<any[]>([]);
 
   useEffect(() => {
     if (!dbConnected) return;
     let active = true;
     const load = async () => {
       try {
-        const [cartRes, userRes] = await Promise.all([
+        const [cartRes, userRes, savedRes] = await Promise.all([
           fetch('/api/cart').then(r => r.json()),
-          fetch('/api/user').then(r => r.json())
+          fetch('/api/user').then(r => r.json()),
+          getSavedProducts()
         ]);
         if (!active) return;
         setTimeout(() => {
@@ -40,6 +42,9 @@ export default function ProductClient({
             setCartItems(cartRes.items);
           }
           setUser(userRes);
+          if (savedRes && savedRes.success) {
+            setSavedProducts(savedRes.items);
+          }
         }, 0);
       } catch (e) {
         console.error('Failed to fetch user/cart data:', e);
@@ -57,15 +62,19 @@ export default function ProductClient({
       if (event.persisted) {
         const load = async () => {
           try {
-            const [cartRes, userRes] = await Promise.all([
+            const [cartRes, userRes, savedRes] = await Promise.all([
               fetch('/api/cart').then(r => r.json()),
-              fetch('/api/user').then(r => r.json())
+              fetch('/api/user').then(r => r.json()),
+              getSavedProducts()
             ]);
             setTimeout(() => {
               if (cartRes && cartRes.items) {
                 setCartItems(cartRes.items);
               }
               setUser(userRes);
+              if (savedRes && savedRes.success) {
+                setSavedProducts(savedRes.items);
+              }
             }, 0);
           } catch (e) {
             console.error('Failed to fetch user/cart data:', e);
@@ -120,6 +129,52 @@ export default function ProductClient({
 
   const handleLogin = async () => {
     router.push('/login');
+  };
+
+  const handleToggleSave = async () => {
+    if (!user) {
+      alert('Please log in to save products.');
+      router.push('/login');
+      return;
+    }
+
+    const res = await toggleSaveProduct(product.id);
+    if (res.success) {
+      const savedRes = await getSavedProducts();
+      if (savedRes.success) {
+        setSavedProducts(savedRes.items);
+      }
+    } else {
+      alert(res.error || 'Failed to update wishlist');
+    }
+  };
+
+  const handleAddSavedToCart = async (savedProd: any) => {
+    if (dbConnected) {
+      const res = await addToCart(savedProd.id, 1);
+      if (res.success) {
+        const updated = await getCart();
+        setCartItems(updated.items || []);
+        await toggleSaveProduct(savedProd.id);
+        const savedRes = await getSavedProducts();
+        if (savedRes.success) {
+          setSavedProducts(savedRes.items);
+        }
+        setCartOpen(true);
+      } else {
+        alert('Error adding to cart: ' + res.error);
+      }
+    }
+  };
+
+  const handleUnsaveProduct = async (productId: number) => {
+    const res = await toggleSaveProduct(productId);
+    if (res.success) {
+      const savedRes = await getSavedProducts();
+      if (savedRes.success) {
+        setSavedProducts(savedRes.items);
+      }
+    }
   };
 
   const handleAddToCart = async (qty: number = 1) => {
@@ -275,15 +330,50 @@ export default function ProductClient({
                 <p>{product.description}</p>
                 <p>Enjoy free shipping on orders over ₹100 and a 30-day money-back guarantee on all our premium toys.</p>
               </div>
-              <div className="product-actions">
+              <div className="product-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                 <button 
                   className="add-to-cart-big" 
                   onClick={() => handleAddToCart(1)}
                   disabled={stock <= 0}
-                  style={stock <= 0 ? { opacity: 0.5, cursor: 'not-allowed', background: '#ccc' } : {}}
+                  style={{
+                    ...(stock <= 0 ? { opacity: 0.5, cursor: 'not-allowed', background: '#ccc' } : {}),
+                    margin: 0
+                  }}
                 >
                   {stock <= 0 ? 'Out of Stock' : 'Add to Cart'}
                 </button>
+                {dbConnected && (
+                  <button 
+                    onClick={handleToggleSave}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '56px',
+                      height: '56px',
+                      backgroundColor: '#3a3b3c',
+                      color: savedProducts.some(p => p.id === product.id) ? 'var(--accent-pink)' : '#e4e6eb',
+                      border: 'none',
+                      borderRadius: '50px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      flexShrink: 0,
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(255, 51, 102, 0.1)';
+                      e.currentTarget.style.boxShadow = '0 0 10px rgba(255, 51, 102, 0.2)';
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.backgroundColor = '#3a3b3c';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                    title={savedProducts.some(p => p.id === product.id) ? "Remove from Saved" : "Save for Later"}
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill={savedProducts.some(p => p.id === product.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                  </button>
+                )}
               </div>
               <div className="product-meta">
                 <div className="meta-item">
@@ -304,6 +394,9 @@ export default function ProductClient({
         items={itemsToRender} 
         onUpdateQty={handleUpdateQty} 
         total={cartTotal}
+        savedItems={dbConnected ? savedProducts : []}
+        onAddSavedToCart={handleAddSavedToCart}
+        onUnsaveProduct={handleUnsaveProduct}
       />
     </>
   );
