@@ -76,6 +76,7 @@ export default function QuickViewModal({
             </button>
             {onToggleSave && (
               <button 
+                className="qv-save-btn"
                 onClick={() => onToggleSave(product.id)}
                 style={{
                   display: 'inline-flex',

@@ -28,6 +28,7 @@ export default function ProductCard({
 
   const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isLongPressRef = useRef(false);
+  const touchStartCoordsRef = useRef<{ x: number, y: number } | null>(null);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length > 1) return;
@@ -37,6 +38,9 @@ export default function ProductCard({
     if (target.closest('button') || target.closest('input')) {
       return;
     }
+
+    const touch = e.touches[0];
+    touchStartCoordsRef.current = { x: touch.clientX, y: touch.clientY };
 
     isLongPressRef.current = false;
     touchTimeoutRef.current = setTimeout(() => {
@@ -53,6 +57,7 @@ export default function ProductCard({
       clearTimeout(touchTimeoutRef.current);
       touchTimeoutRef.current = null;
     }
+    touchStartCoordsRef.current = null;
 
     if (isLongPressRef.current) {
       e.preventDefault();
@@ -61,10 +66,19 @@ export default function ProductCard({
     }
   };
 
-  const handleTouchMove = () => {
-    if (touchTimeoutRef.current) {
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!touchStartCoordsRef.current || !touchTimeoutRef.current) return;
+
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - touchStartCoordsRef.current.x;
+    const deltaY = touch.clientY - touchStartCoordsRef.current.y;
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+    // If movement exceeds 10px, it's a drag/scroll. Cancel the long press.
+    if (distance > 10) {
       clearTimeout(touchTimeoutRef.current);
       touchTimeoutRef.current = null;
+      touchStartCoordsRef.current = null;
     }
   };
 
