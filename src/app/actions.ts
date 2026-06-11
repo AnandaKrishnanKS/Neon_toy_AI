@@ -289,13 +289,15 @@ export async function placeOrder(orderData: {
         created_at: createdAt
       };
       
+      let emailSent = false;
       try {
-        sendOrderStatusEmail(newOrder, 'placed', orderData.user_email);
+        const emailRes = await sendOrderStatusEmail(newOrder, 'placed', orderData.user_email);
+        emailSent = emailRes?.success || false;
       } catch (emailErr) {
         console.error('Email sending error (non-fatal):', emailErr);
       }
 
-      return { success: true, orderId: newOrderId };
+      return { success: true, orderId: newOrderId, emailSent };
     } catch (e: any) {
       await query('ROLLBACK');
       console.error('Place Order Error:', e);
@@ -363,13 +365,15 @@ export async function cancelOrder(orderId: number) {
       );
 
       // Send cancellation email asynchronously
+      let emailSent = false;
       try {
-        sendOrderStatusEmail(order, 'cancelled', order.user_email);
+        const emailRes = await sendOrderStatusEmail(order, 'cancelled', order.user_email);
+        emailSent = emailRes?.success || false;
       } catch (emailErr) {
         console.error('Email sending error (non-fatal):', emailErr);
       }
 
-      return { success: true };
+      return { success: true, emailSent };
     } catch (e: any) {
       console.error('Cancel Order Error:', e);
       return { success: false, error: e.message || 'Database error' };
@@ -481,14 +485,16 @@ export async function updateOrderStatus(orderId: number, newStatus: string) {
       status: newStatus
     };
 
+    let emailSent = false;
     try {
       const type = newStatus.toLowerCase() as 'placed' | 'processing' | 'cancelled' | 'refunded' | 'shipped' | 'delivered';
-      sendOrderStatusEmail(updatedOrder, type, order.user_email);
+      const emailRes = await sendOrderStatusEmail(updatedOrder, type, order.user_email);
+      emailSent = emailRes?.success || false;
     } catch (emailErr) {
       console.error('Email sending error (non-fatal):', emailErr);
     }
 
-    return { success: true };
+    return { success: true, emailSent };
   } catch (error: any) {
     console.error('Update Order Status Error:', error);
     return { success: false, error: error.message || 'Database error' };

@@ -35,6 +35,11 @@ export default function OrdersClient({ user, orders }: { user: User, orders: Ord
       setIsProcessing(orderId);
       const res = await cancelOrder(orderId);
       if (res.success) {
+        if (res.emailSent) {
+          alert('Your order status has been sent to your registered mail ID.');
+        } else {
+          alert('Order cancelled successfully, but there was an issue sending the email notification.');
+        }
         router.refresh();
       } else {
         alert('Could not cancel order. It might already be processed.');

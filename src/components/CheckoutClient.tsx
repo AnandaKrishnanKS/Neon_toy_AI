@@ -24,6 +24,7 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
   const [isPlacing, setIsPlacing] = useState(false);
   const [orderId, setOrderId] = useState<number | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'razorpay'>('cod');
+  const [emailSent, setEmailSent] = useState<boolean | null>(null);
 
   const totalPayable = cartTotal >= 100 ? cartTotal : cartTotal + 10;
 
@@ -92,6 +93,7 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
       const res = await placeOrder(orderData);
       if (res.success) {
         await clearCart();
+        setEmailSent(res.emailSent || false);
         setOrderId(res.orderId || Math.floor(Math.random() * 100000) + 10000);
       } else {
         alert(res.error || 'Failed to place order. Please try again.');
@@ -146,6 +148,7 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
             const placeRes = await placeOrder(orderData);
             if (placeRes.success) {
               await clearCart();
+              setEmailSent(placeRes.emailSent || false);
               setOrderId(placeRes.orderId || Math.floor(Math.random() * 100000) + 10000);
             } else {
               alert(placeRes.error || "Failed to place order. Please contact support.");
@@ -185,6 +188,29 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
             <p><strong>Payment Method:</strong> {paymentMethod === 'cod' ? 'Cash on Delivery' : 'Razorpay Secure Payment'}</p>
             <p><strong>Delivery Address:</strong> {user.address}, {user.city} - {user.zipCode}</p>
           </div>
+          
+          <div className="email-status-banner" style={{
+            background: emailSent ? 'rgba(0, 242, 255, 0.08)' : 'rgba(255, 51, 102, 0.08)',
+            border: emailSent ? '1px solid var(--accent-cyan)' : '1px solid var(--accent-pink)',
+            padding: '16px 20px',
+            borderRadius: '16px',
+            marginBottom: '30px',
+            textAlign: 'center',
+            fontSize: '0.95rem',
+            color: emailSent ? 'var(--accent-cyan)' : 'var(--accent-pink)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px'
+          }}>
+            <span style={{ fontSize: '1.2rem' }}>{emailSent ? '✉️' : '⚠️'}</span>
+            <span>
+              {emailSent 
+                ? 'Your order status has been sent to your registered mail ID.' 
+                : 'Order placed, but there was an issue sending the confirmation email.'}
+            </span>
+          </div>
+
           <Link href="/" className="back-to-home-btn">Return to Shop</Link>
         </div>
       </div>
