@@ -21,13 +21,19 @@ export default function ProductCard({ product, onAddToCart, onQuickView, priorit
     <div key={product.id} className="product-card tilt-effect">
       <div className="product-image-container">
         <Link href={`/product/${createProductSlug(product.id, product.name)}`} className="product-link">
-          <img 
-            src={optimizeUnsplashUrl(product.image_url, 500, 75)} 
-            alt={product.name} 
-            className="product-image" 
-            fetchPriority={priority ? "high" : undefined}
-            loading={priority ? "eager" : "lazy"}
-          />
+          <picture style={{ display: 'contents' }}>
+            <source 
+              media="(max-width: 640px)" 
+              srcSet={`${optimizeUnsplashUrl(product.image_url, 300, 60)} 1x, ${optimizeUnsplashUrl(product.image_url, 600, 60)} 2x`}
+            />
+            <img 
+              src={optimizeUnsplashUrl(product.image_url, 500, 75)} 
+              alt={product.name} 
+              className="product-image" 
+              fetchPriority={priority ? "high" : undefined}
+              loading={priority ? "eager" : "lazy"}
+            />
+          </picture>
         </Link>
         {hasDiscount && (
           <span className="discount-tag-badge">
