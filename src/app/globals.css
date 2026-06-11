@@ -253,6 +253,9 @@ html {
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: fadeIn 0.8s ease-out backwards;
+  -webkit-touch-callout: none; /* Prevents long-press menu on iOS */
+  -webkit-user-select: none;   /* Prevents text selection in Safari */
+  user-select: none;           /* Prevents text selection */
 }
 
 .product-card:hover {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Product } from '@/lib/types';
 import Link from 'next/link';
 import { createProductSlug, optimizeUnsplashUrl } from '@/lib/utils';
@@ -6,7 +6,7 @@ import { createProductSlug, optimizeUnsplashUrl } from '@/lib/utils';
 interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product) => void;
-  onQuickView: (product: Product) => void;
+  onQuickView: (product: Product | null) => void;
   priority?: boolean;
   isSaved?: boolean;
   onToggleSave?: (productId: number) => void;
@@ -26,8 +26,64 @@ export default function ProductCard({
     ? originalPrice * (1 - product.discount_percentage! / 100) 
     : originalPrice;
 
+  const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isLongPressRef = useRef(false);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length > 1) return;
+
+    // Do not trigger long press if touching interactive elements (buttons, etc.)
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('input')) {
+      return;
+    }
+
+    isLongPressRef.current = false;
+    touchTimeoutRef.current = setTimeout(() => {
+      isLongPressRef.current = true;
+      onQuickView(product);
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+    }, 500);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchTimeoutRef.current) {
+      clearTimeout(touchTimeoutRef.current);
+      touchTimeoutRef.current = null;
+    }
+
+    if (isLongPressRef.current) {
+      e.preventDefault();
+      onQuickView(null);
+      isLongPressRef.current = false;
+    }
+  };
+
+  const handleTouchMove = () => {
+    if (touchTimeoutRef.current) {
+      clearTimeout(touchTimeoutRef.current);
+      touchTimeoutRef.current = null;
+    }
+  };
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    if (isLongPressRef.current) {
+      e.preventDefault();
+    }
+  };
+
   return (
-    <div key={product.id} className="product-card tilt-effect">
+    <div 
+      key={product.id} 
+      className="product-card tilt-effect"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+      onTouchMove={handleTouchMove}
+      onContextMenu={handleContextMenu}
+    >
       <div className="product-image-container">
         <Link href={`/product/${createProductSlug(product.id, product.name)}`} className="product-link">
           <picture style={{ display: 'contents' }}>
