@@ -244,7 +244,7 @@ export default function StoreClient({
                   <div className="deal-card-overlay"></div>
                   <div className="deal-card-badge">{offer.badge_text || `${offer.discount_percentage}% OFF`}</div>
                   <div className="deal-card-content">
-                    <h3>{offer.title}</h3>
+                    <h2>{offer.title}</h2>
                     <p>{offer.description}</p>
                   </div>
                   {activeOfferId === offer.id && (
