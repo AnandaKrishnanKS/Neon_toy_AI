@@ -35,7 +35,7 @@ export default function ProductCard({ product, onAddToCart, onQuickView }: Produ
         </button>
       </div>
       <div className="product-info">
-        <Link href={`/product/${createProductSlug(product.id, product.name)}`} className="product-link">
+        <Link href={`/product/${createProductSlug(product.id, product.name)}`} className="product-title-link">
           <h2 className="product-title">{product.name}</h2>
         </Link>
         <p className="product-desc">{product.description}</p>
