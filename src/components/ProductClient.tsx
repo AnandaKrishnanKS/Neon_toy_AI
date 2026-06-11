@@ -9,20 +9,74 @@ import CartDrawer from './CartDrawer';
 
 export default function ProductClient({ 
   product, 
-  initialCart,
+  initialCart = [],
   dbConnected,
-  user
+  user: initialUser = null
 }: { 
   product: Product, 
-  initialCart: CartItem[],
+  initialCart?: CartItem[],
   dbConnected: boolean,
-  user: User | null
+  user?: User | null
 }) {
   const router = useRouter();
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>(initialCart);
+  const [user, setUser] = useState<User | null>(initialUser);
   const [headerVisible, setHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    if (!dbConnected) return;
+    let active = true;
+    const load = async () => {
+      try {
+        const [cartRes, userRes] = await Promise.all([
+          fetch('/api/cart').then(r => r.json()),
+          fetch('/api/user').then(r => r.json())
+        ]);
+        if (!active) return;
+        setTimeout(() => {
+          if (cartRes && cartRes.items) {
+            setCartItems(cartRes.items);
+          }
+          setUser(userRes);
+        }, 0);
+      } catch (e) {
+        console.error('Failed to fetch user/cart data:', e);
+      }
+    };
+    load();
+    return () => {
+      active = false;
+    };
+  }, [dbConnected]);
+
+  useEffect(() => {
+    if (!dbConnected) return;
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        const load = async () => {
+          try {
+            const [cartRes, userRes] = await Promise.all([
+              fetch('/api/cart').then(r => r.json()),
+              fetch('/api/user').then(r => r.json())
+            ]);
+            setTimeout(() => {
+              if (cartRes && cartRes.items) {
+                setCartItems(cartRes.items);
+              }
+              setUser(userRes);
+            }, 0);
+          } catch (e) {
+            console.error('Failed to fetch user/cart data:', e);
+          }
+        };
+        load();
+      }
+    };
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, [dbConnected]);
   const [localCart, setLocalCart] = useState<CartItem[]>([]);
   const [viewers, setViewers] = useState<number>(12);
   const [stock, setStock] = useState<number>(product.stock_count !== undefined ? product.stock_count : 5);
@@ -40,10 +94,12 @@ export default function ProductClient({
     : originalPrice;
 
   useEffect(() => {
-    setViewers(Math.floor(Math.random() * 20) + 5);
-    if (!dbConnected) {
-      setStock(Math.floor(Math.random() * 8) + 1);
-    }
+    setTimeout(() => {
+      setViewers(Math.floor(Math.random() * 20) + 5);
+      if (!dbConnected) {
+        setStock(Math.floor(Math.random() * 8) + 1);
+      }
+    }, 0);
   }, [dbConnected]);
 
   const itemsToRender = dbConnected ? cartItems : localCart;

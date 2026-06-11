@@ -1,9 +1,20 @@
-import { getProduct, isDbConnected } from '@/lib/db';
-import { getCart, getUser } from '@/app/actions';
+import { getProduct, isDbConnected, query } from '@/lib/db';
 import ProductClient from '@/components/ProductClient';
 import { notFound } from 'next/navigation';
-import { extractIdFromSlug } from '@/lib/utils';
-import { CartItem } from '@/lib/types';
+import { extractIdFromSlug, createProductSlug } from '@/lib/utils';
+
+export async function generateStaticParams() {
+  if (!isDbConnected) return [];
+  try {
+    const res = await query('SELECT id, name FROM products');
+    return res.rows.map((product: { id: number; name: string }) => ({
+      id: createProductSlug(product.id, product.name),
+    }));
+  } catch (e) {
+    console.error('generateStaticParams error:', e);
+    return [];
+  }
+}
 
 export default async function ProductPage({ 
   params 
@@ -22,18 +33,6 @@ export default async function ProductPage({
 
   if (!product) {
     notFound();
-  }
-
-  const user = await getUser();
-  let cartItems: CartItem[] = [];
-
-  if (isDbConnected) {
-    try {
-      const cartRes = await getCart();
-      cartItems = cartRes.items || [];
-    } catch (e) {
-      console.error('Failed to fetch from db:', e);
-    }
   }
 
   const jsonLd = {
@@ -59,9 +58,7 @@ export default async function ProductPage({
       <ProductClient 
         key={product.id}
         product={product} 
-        initialCart={cartItems} 
         dbConnected={isDbConnected}
-        user={user}
       />
     </>
   );

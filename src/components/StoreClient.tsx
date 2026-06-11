@@ -16,24 +16,78 @@ const CATEGORIES = ["All", "Vehicles", "Plush", "STEM", "Action"];
 
 export default function StoreClient({ 
   initialProducts, 
-  initialCart,
+  initialCart = [],
   dbConnected,
-  user,
+  user: initialUser = null,
   totalProducts,
   offers = []
 }: { 
   initialProducts: Product[], 
-  initialCart: CartItem[],
+  initialCart?: CartItem[],
   dbConnected: boolean,
-  user: User | null,
+  user?: User | null,
   totalProducts: number,
   offers?: any[]
 }) {
   const router = useRouter();
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>(initialCart);
+  const [user, setUser] = useState<User | null>(initialUser);
   const [headerVisible, setHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    if (!dbConnected) return;
+    let active = true;
+    const load = async () => {
+      try {
+        const [cartRes, userRes] = await Promise.all([
+          fetch('/api/cart').then(r => r.json()),
+          fetch('/api/user').then(r => r.json())
+        ]);
+        if (!active) return;
+        setTimeout(() => {
+          if (cartRes && cartRes.items) {
+            setCartItems(cartRes.items);
+          }
+          setUser(userRes);
+        }, 0);
+      } catch (e) {
+        console.error('Failed to fetch user/cart data:', e);
+      }
+    };
+    load();
+    return () => {
+      active = false;
+    };
+  }, [dbConnected]);
+
+  useEffect(() => {
+    if (!dbConnected) return;
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        const load = async () => {
+          try {
+            const [cartRes, userRes] = await Promise.all([
+              fetch('/api/cart').then(r => r.json()),
+              fetch('/api/user').then(r => r.json())
+            ]);
+            setTimeout(() => {
+              if (cartRes && cartRes.items) {
+                setCartItems(cartRes.items);
+              }
+              setUser(userRes);
+            }, 0);
+          } catch (e) {
+            console.error('Failed to fetch user/cart data:', e);
+          }
+        };
+        load();
+      }
+    };
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, [dbConnected]);
   
   // Pagination & Search state
   const [products, setProducts] = useState<Product[]>(initialProducts);

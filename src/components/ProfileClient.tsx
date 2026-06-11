@@ -23,7 +23,9 @@ export default function ProfileClient({ user }: { user: User }) {
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'dark';
-    setTheme(savedTheme);
+    setTimeout(() => {
+      setTheme(savedTheme);
+    }, 0);
     document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
 
