@@ -105,24 +105,41 @@ export default function CartDrawer({
                       </div>
                       <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
                         {onAddSavedToCart && (
-                          <button 
-                            onClick={() => onAddSavedToCart(item)}
-                            style={{
-                              padding: '6px 12px',
-                              backgroundColor: 'rgba(0, 210, 255, 0.15)',
-                              color: 'var(--accent-cyan)',
-                              border: 'none',
-                              borderRadius: '6px',
-                              fontWeight: '600',
-                              fontSize: '0.8rem',
-                              cursor: 'pointer',
-                              transition: 'all 0.2s',
-                            }}
-                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 210, 255, 0.25)'}
-                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 210, 255, 0.15)'}
-                          >
-                            Add to Cart
-                          </button>
+                          item.stock_count !== undefined && item.stock_count <= 0 ? (
+                            <span 
+                              style={{
+                                padding: '6px 12px',
+                                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                                color: 'var(--text-secondary)',
+                                borderRadius: '6px',
+                                fontWeight: '600',
+                                fontSize: '0.8rem',
+                                border: '1px solid var(--glass-border)',
+                                display: 'inline-block'
+                              }}
+                            >
+                              Out of Stock
+                            </span>
+                          ) : (
+                            <button 
+                              onClick={() => onAddSavedToCart(item)}
+                              style={{
+                                padding: '6px 12px',
+                                backgroundColor: 'rgba(0, 210, 255, 0.15)',
+                                color: 'var(--accent-cyan)',
+                                border: 'none',
+                                borderRadius: '6px',
+                                fontWeight: '600',
+                                fontSize: '0.8rem',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s',
+                              }}
+                              onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 210, 255, 0.25)'}
+                              onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 210, 255, 0.15)'}
+                            >
+                              Add to Cart
+                            </button>
+                          )
                         )}
                         {onUnsaveProduct && (
                           <button 
