@@ -13,3 +13,19 @@ export function extractIdFromSlug(slug: string): number {
   }
   return parseInt(slug, 10);
 }
+
+export function optimizeUnsplashUrl(url: string, width: number = 500, quality: number = 80): string {
+  if (!url || !url.includes('unsplash.com')) {
+    return url;
+  }
+
+  try {
+    const urlObj = new URL(url);
+    urlObj.searchParams.set('auto', 'format');
+    urlObj.searchParams.set('w', width.toString());
+    urlObj.searchParams.set('q', quality.toString());
+    return urlObj.toString();
+  } catch (e) {
+    return url;
+  }
+}

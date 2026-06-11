@@ -1,7 +1,7 @@
 import React from 'react';
 import { Product } from '@/lib/types';
 import Link from 'next/link';
-import { createProductSlug } from '@/lib/utils';
+import { createProductSlug, optimizeUnsplashUrl } from '@/lib/utils';
 
 interface QuickViewModalProps {
   product: Product;
@@ -24,7 +24,7 @@ export default function QuickViewModal({ product, isOpen, onClose, onAddToCart }
       <div className="quick-view-content" onClick={e => e.stopPropagation()}>
         <button className="close-quick-view" onClick={onClose} aria-label="Close quick view">✕</button>
         <div className="qv-image-container">
-          <img src={product.image_url} alt={product.name} />
+          <img src={optimizeUnsplashUrl(product.image_url, 400, 75)} alt={product.name} />
           {hasDiscount && (
             <span className="discount-tag-badge">
               {product.badge_text || `${product.discount_percentage}% OFF`}

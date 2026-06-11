@@ -1,7 +1,7 @@
 import React from 'react';
 import { Product } from '@/lib/types';
 import Link from 'next/link';
-import { createProductSlug } from '@/lib/utils';
+import { createProductSlug, optimizeUnsplashUrl } from '@/lib/utils';
 
 interface ProductCardProps {
   product: Product;
@@ -22,7 +22,7 @@ export default function ProductCard({ product, onAddToCart, onQuickView, priorit
       <div className="product-image-container">
         <Link href={`/product/${createProductSlug(product.id, product.name)}`} className="product-link">
           <img 
-            src={product.image_url} 
+            src={optimizeUnsplashUrl(product.image_url, 500, 75)} 
             alt={product.name} 
             className="product-image" 
             fetchPriority={priority ? "high" : undefined}
