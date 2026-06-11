@@ -2360,6 +2360,114 @@ html {
   display: block;
 }
 
+/* Terms & Conditions Specific Styles */
+.terms-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+  color: var(--text-primary);
+}
+
+.terms-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 120px 1rem 4rem;
+}
+
+.terms-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  padding: 2.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  animation: fadeIn 0.8s ease-out;
+}
+
+.terms-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 2rem;
+}
+
+.terms-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: rgba(0, 210, 255, 0.1);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 210, 255, 0.2);
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.1);
+}
+
+.terms-title-area h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(to right, var(--accent-pink), var(--accent-cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.terms-title-area .last-updated {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.terms-body {
+  color: var(--text-primary);
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.terms-h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 0.5rem;
+}
+
+.terms-h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  color: var(--accent-cyan);
+}
+
+.terms-h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.terms-p {
+  margin-bottom: 1.25rem;
+  color: var(--text-secondary);
+  text-align: justify;
+}
+
+.terms-li {
+  margin-left: 1.5rem;
+  margin-bottom: 0.5rem;
+  list-style-type: disc;
+  color: var(--text-secondary);
+}
+
+.terms-spacer {
+  height: 0.75rem;
+}
+
 
 
 

@@ -63,6 +63,22 @@ export async function getProduct(id: number): Promise<Product | null> {
   return null;
 }
 
+export async function getTermsAndConditions(): Promise<{ content: string; updated_at: Date } | null> {
+  try {
+    const res = await query('SELECT content, updated_at FROM terms_conditions ORDER BY id DESC LIMIT 1');
+    if (res.rows.length > 0) {
+      return {
+        content: res.rows[0].content,
+        updated_at: res.rows[0].updated_at
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error('Error fetching terms and conditions:', error);
+    return null;
+  }
+}
+
 export async function query(sql: string, params?: any[]) {
   if (!pool) {
     throw new Error('Database is not configured. Missing DATABASE_URL.');

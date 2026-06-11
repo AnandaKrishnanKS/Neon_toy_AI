@@ -156,6 +156,58 @@ async function setup() {
       console.log(`Linked product "${prodName}" to offer "${offerTitle}"`);
     }
 
+    // Create terms_conditions table
+    console.log('Creating terms_conditions table...');
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS terms_conditions (
+        id SERIAL PRIMARY KEY,
+        content TEXT NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    // Seed terms_conditions
+    console.log('Checking for terms & conditions...');
+    const checkTerms = await client.query('SELECT id FROM terms_conditions LIMIT 1');
+    if (checkTerms.rows.length === 0) {
+      const defaultTerms = `# Terms and Conditions
+Last Updated: June 12, 2026
+
+Welcome to ToTToys!
+
+These Terms and Conditions ("Terms") govern your use of the ToTToys website and store. By accessing or using our services, you agree to be bound by these Terms.
+
+## 1. User Accounts
+When you create an account with us, you must provide information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account.
+
+## 2. Purchases and Payments
+All purchases made through our store are subject to product availability. We reserve the right to limit the quantities of any products or services that we offer. Prices for our products are subject to change without notice. We accept payments through secure checkout providers.
+
+## 3. Shipping and Delivery
+Delivery times may vary depending on the destination. We are not responsible for delays caused by the shipping carrier or customs clearance processes.
+
+## 4. Returns and Refunds
+Please review our Refund Policy prior to making any purchases. Products can be returned within 30 days of purchase in their original condition and packaging.
+
+## 5. Intellectual Property
+All content included on this site, such as text, graphics, logos, images, digital downloads, and software, is the property of ToTToys or its content suppliers and is protected by international copyright laws.
+
+## 6. Limitation of Liability
+To the maximum extent permitted by law, ToTToys shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues.
+
+## 7. Governing Law
+These Terms shall be governed and construed in accordance with the laws of the country of operation, without regard to its conflict of law provisions.
+
+## 8. Changes to Terms
+We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will notify you of any changes by posting the new Terms on this page.
+
+## 9. Contact Us
+If you have any questions about these Terms, please contact us at support@tottoys.com.`;
+      
+      await client.query('INSERT INTO terms_conditions (content) VALUES ($1)', [defaultTerms]);
+      console.log('Seeded default terms and conditions.');
+    }
+
     client.release();
     console.log('✅ Database setup complete!');
     process.exit(0);

@@ -190,7 +190,7 @@ export default function ProfileClient({ user }: { user: User }) {
             </div>
           )}
 
-          <div className="profile-actions" style={{ display: 'flex', gap: '12px' }}>
+          <div className="profile-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             <button onClick={handleLogout} className="logout-btn">Log Out</button>
             <button 
               onClick={() => {
@@ -198,7 +198,11 @@ export default function ProfileClient({ user }: { user: User }) {
                 setChatStatus('idle');
               }}
               style={{
-                padding: '12px 24px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                padding: '12px 20px',
                 backgroundColor: '#3a3b3c',
                 color: '#e4e6eb',
                 fontSize: '15px',
@@ -206,13 +210,66 @@ export default function ProfileClient({ user }: { user: User }) {
                 border: 'none',
                 borderRadius: '8px',
                 cursor: 'pointer',
-                transition: 'background-color 0.2s',
+                transition: 'all 0.2s ease',
               }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4e4f50'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#3a3b3c'}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(0, 210, 255, 0.15)';
+                e.currentTarget.style.color = 'var(--accent-cyan)';
+                e.currentTarget.style.boxShadow = '0 0 10px rgba(0, 210, 255, 0.3)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = '#3a3b3c';
+                e.currentTarget.style.color = '#e4e6eb';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
-              Get Help
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              <span>Get Help</span>
             </button>
+            <Link 
+              href="/terms"
+              title="Terms & Conditions"
+              aria-label="Terms & Conditions"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                padding: '12px 20px',
+                backgroundColor: '#3a3b3c',
+                color: '#e4e6eb',
+                fontSize: '15px',
+                fontWeight: '600',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                textDecoration: 'none'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(0, 210, 255, 0.15)';
+                e.currentTarget.style.color = 'var(--accent-cyan)';
+                e.currentTarget.style.boxShadow = '0 0 10px rgba(0, 210, 255, 0.3)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = '#3a3b3c';
+                e.currentTarget.style.color = '#e4e6eb';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              <span>T&C</span>
+            </Link>
           </div>
         </div>
       </main>
