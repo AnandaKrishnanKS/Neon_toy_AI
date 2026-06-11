@@ -1,6 +1,5 @@
 import React from 'react';
 import { CartItem } from '@/lib/types';
-import { optimizeUnsplashUrl } from '@/lib/utils';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -48,7 +47,7 @@ export default function CartDrawer({
               const originalPrice = item.original_price || item.price;
               return (
                 <div key={item.product_id} className="cart-item">
-                  <img src={optimizeUnsplashUrl(item.image_url, 160, 75)} alt={item.name} className="cart-item-image" />
+                  <img src={item.image_url} alt={item.name} className="cart-item-image" />
                   <div className="cart-item-details">
                     <div className="cart-item-title-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
                       <div className="cart-item-title">{item.name}</div>

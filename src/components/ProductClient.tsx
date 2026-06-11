@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { Product, CartItem, User } from '@/lib/types';
 import Navbar from './Navbar';
 import CartDrawer from './CartDrawer';
-import { optimizeUnsplashUrl } from '@/lib/utils';
 
 export default function ProductClient({ 
   product, 
@@ -158,7 +157,7 @@ export default function ProductClient({
             <div className={`product-detail-image ${allImages.length > 1 ? 'has-gallery' : ''}`}>
               <div className="product-detail-image-main">
                 <img 
-                  src={optimizeUnsplashUrl(selectedImage, 800, 75)} 
+                  src={selectedImage} 
                   alt={product.name} 
                   fetchPriority="high"
                   loading="eager"
@@ -174,7 +173,7 @@ export default function ProductClient({
                       type="button"
                       aria-label={`View product image ${index + 1}`}
                     >
-                      <img src={optimizeUnsplashUrl(imgUrl, 120, 75)} alt={`${product.name} preview ${index + 1}`} />
+                      <img src={imgUrl} alt={`${product.name} preview ${index + 1}`} />
                     </button>
                   ))}
                 </div>
