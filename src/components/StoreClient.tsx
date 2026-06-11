@@ -287,12 +287,13 @@ export default function StoreClient({
         </div>
 
         <section className="product-grid">
-          {filteredProducts.map(product => (
+          {filteredProducts.map((product, index) => (
             <ProductCard 
               key={product.id} 
               product={product} 
               onAddToCart={handleAddToCart} 
               onQuickView={setQuickViewProduct}
+              priority={index < 2}
             />
           ))}
           {filteredProducts.length === 0 && (

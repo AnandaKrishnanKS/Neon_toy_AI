@@ -7,9 +7,10 @@ interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product) => void;
   onQuickView: (product: Product) => void;
+  priority?: boolean;
 }
 
-export default function ProductCard({ product, onAddToCart, onQuickView }: ProductCardProps) {
+export default function ProductCard({ product, onAddToCart, onQuickView, priority = false }: ProductCardProps) {
   const hasDiscount = product.discount_percentage && product.discount_percentage > 0;
   const originalPrice = Number(product.price);
   const discountedPrice = hasDiscount 
@@ -20,7 +21,13 @@ export default function ProductCard({ product, onAddToCart, onQuickView }: Produ
     <div key={product.id} className="product-card tilt-effect">
       <div className="product-image-container">
         <Link href={`/product/${createProductSlug(product.id, product.name)}`} className="product-link">
-          <img src={product.image_url} alt={product.name} className="product-image" />
+          <img 
+            src={product.image_url} 
+            alt={product.name} 
+            className="product-image" 
+            fetchPriority={priority ? "high" : undefined}
+            loading={priority ? "eager" : "lazy"}
+          />
         </Link>
         {hasDiscount && (
           <span className="discount-tag-badge">

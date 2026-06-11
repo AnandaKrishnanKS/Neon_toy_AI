@@ -156,7 +156,12 @@ export default function ProductClient({
           <div className="product-detail-content">
             <div className={`product-detail-image ${allImages.length > 1 ? 'has-gallery' : ''}`}>
               <div className="product-detail-image-main">
-                <img src={selectedImage} alt={product.name} />
+                <img 
+                  src={selectedImage} 
+                  alt={product.name} 
+                  fetchPriority="high"
+                  loading="eager"
+                />
               </div>
               {allImages.length > 1 && (
                 <div className="product-detail-image-thumbnails">
