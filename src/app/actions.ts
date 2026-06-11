@@ -4,6 +4,7 @@ import { query, isDbConnected } from '@/lib/db';
 import { cookies } from 'next/headers';
 import { OAuth2Client } from 'google-auth-library';
 import { SignJWT, jwtVerify } from 'jose';
+import { sendOrderStatusEmail } from '@/lib/email';
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback_secret_for_development_do_not_use_in_prod');
 
@@ -263,9 +264,10 @@ export async function placeOrder(orderData: {
         );
       }
 
-      await query(`
+      const orderRes = await query(`
         INSERT INTO orders (user_email, total_amount, items, shipping_details)
         VALUES ($1, $2, $3, $4)
+        RETURNING id, created_at
       `, [
         orderData.user_email, 
         orderData.total_amount, 
@@ -273,8 +275,27 @@ export async function placeOrder(orderData: {
         JSON.stringify(orderData.shipping_details)
       ]);
 
+      const newOrderId = orderRes.rows[0].id;
+      const createdAt = orderRes.rows[0].created_at;
+
       await query('COMMIT');
-      return { success: true };
+
+      // Send confirmation email asynchronously so it doesn't block the client
+      const newOrder = {
+        id: newOrderId,
+        total_amount: orderData.total_amount,
+        items: orderData.items,
+        shipping_details: orderData.shipping_details,
+        created_at: createdAt
+      };
+      
+      try {
+        sendOrderStatusEmail(newOrder, 'placed', orderData.user_email);
+      } catch (emailErr) {
+        console.error('Email sending error (non-fatal):', emailErr);
+      }
+
+      return { success: true, orderId: newOrderId };
     } catch (e: any) {
       await query('ROLLBACK');
       console.error('Place Order Error:', e);
@@ -324,14 +345,34 @@ export async function getUserOrders() {
 export async function cancelOrder(orderId: number) {
   if (isDbConnected) {
     try {
+      // Fetch order details first
+      const orderRes = await query('SELECT * FROM orders WHERE id = $1', [orderId]);
+      if (orderRes.rowCount === 0) {
+        return { success: false, error: 'Order not found.' };
+      }
+
+      const order = orderRes.rows[0];
+      if (order.status.toLowerCase() !== 'pending') {
+        return { success: false, error: 'Only pending orders can be cancelled.' };
+      }
+
+      // Update status
       await query(
-        "UPDATE orders SET status = 'Cancelled' WHERE id = $1 AND status = 'Pending'",
+        "UPDATE orders SET status = 'Cancelled' WHERE id = $1",
         [orderId]
       );
+
+      // Send cancellation email asynchronously
+      try {
+        sendOrderStatusEmail(order, 'cancelled', order.user_email);
+      } catch (emailErr) {
+        console.error('Email sending error (non-fatal):', emailErr);
+      }
+
       return { success: true };
-    } catch (e) {
+    } catch (e: any) {
       console.error('Cancel Order Error:', e);
-      return { success: false };
+      return { success: false, error: e.message || 'Database error' };
     }
   }
   return { success: true };
@@ -416,5 +457,40 @@ export async function verifyRazorpayPayment(data: {
   } catch (error) {
     console.error("Razorpay Verification Error:", error);
     return { success: false, message: "Verification failed" };
+  }
+}
+
+export async function updateOrderStatus(orderId: number, newStatus: string) {
+  if (!isDbConnected) {
+    return { success: false, error: 'Database is not connected.' };
+  }
+
+  try {
+    const orderRes = await query('SELECT * FROM orders WHERE id = $1', [orderId]);
+    if (orderRes.rowCount === 0) {
+      return { success: false, error: 'Order not found.' };
+    }
+    const order = orderRes.rows[0];
+
+    // Update status in database
+    await query('UPDATE orders SET status = $1 WHERE id = $2', [newStatus, orderId]);
+    
+    // Send email notification based on the updated status
+    const updatedOrder = {
+      ...order,
+      status: newStatus
+    };
+
+    try {
+      const type = newStatus.toLowerCase() as 'placed' | 'processing' | 'cancelled' | 'refunded' | 'shipped' | 'delivered';
+      sendOrderStatusEmail(updatedOrder, type, order.user_email);
+    } catch (emailErr) {
+      console.error('Email sending error (non-fatal):', emailErr);
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    console.error('Update Order Status Error:', error);
+    return { success: false, error: error.message || 'Database error' };
   }
 }

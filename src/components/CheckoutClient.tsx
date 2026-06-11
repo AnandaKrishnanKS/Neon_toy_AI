@@ -92,7 +92,7 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
       const res = await placeOrder(orderData);
       if (res.success) {
         await clearCart();
-        setOrderId(Math.floor(Math.random() * 100000) + 10000);
+        setOrderId(res.orderId || Math.floor(Math.random() * 100000) + 10000);
       } else {
         alert(res.error || 'Failed to place order. Please try again.');
       }
@@ -146,7 +146,7 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
             const placeRes = await placeOrder(orderData);
             if (placeRes.success) {
               await clearCart();
-              setOrderId(Math.floor(Math.random() * 100000) + 10000);
+              setOrderId(placeRes.orderId || Math.floor(Math.random() * 100000) + 10000);
             } else {
               alert(placeRes.error || "Failed to place order. Please contact support.");
             }
