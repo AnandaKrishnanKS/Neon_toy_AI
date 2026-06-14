@@ -6,8 +6,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ToTStore | Premium Toy Store",
-  description: "Imagine. Build. Play.",
+  title: "ToTStore | Handmade Crafts & Custom Gifts",
+  description: "Discover custom gifts and unique handcrafted creations at TotStore.",
 };
 
 import ChatBot from "@/components/ChatBot";
