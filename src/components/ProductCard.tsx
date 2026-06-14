@@ -99,28 +99,33 @@ export default function ProductCard({
       onContextMenu={handleContextMenu}
     >
       <div className="product-image-container">
+        <picture style={{ display: 'contents' }}>
+          <source 
+            media="(max-width: 640px)" 
+            srcSet={`${optimizeUnsplashUrl(product.image_url, 300, 60)} 1x, ${optimizeUnsplashUrl(product.image_url, 600, 60)} 2x`}
+          />
+          <img 
+            src={optimizeUnsplashUrl(product.image_url, 500, 75)} 
+            alt={product.name} 
+            className="product-image" 
+            fetchPriority={priority ? "high" : undefined}
+            loading={priority ? "eager" : "lazy"}
+          />
+        </picture>
         <Link 
           href={`/product/${createProductSlug(product.id, product.name)}`} 
-          className="product-link"
-          style={onToggleSave ? {
-            display: 'block',
-            clipPath: 'polygon(0% 0%, calc(100% - 68px) 0%, calc(100% - 68px) 68px, 100% 68px, 100% 100%, 0% 100%)',
-          } : { display: 'block' }}
-        >
-          <picture style={{ display: 'contents' }}>
-            <source 
-              media="(max-width: 640px)" 
-              srcSet={`${optimizeUnsplashUrl(product.image_url, 300, 60)} 1x, ${optimizeUnsplashUrl(product.image_url, 600, 60)} 2x`}
-            />
-            <img 
-              src={optimizeUnsplashUrl(product.image_url, 500, 75)} 
-              alt={product.name} 
-              className="product-image" 
-              fetchPriority={priority ? "high" : undefined}
-              loading={priority ? "eager" : "lazy"}
-            />
-          </picture>
-        </Link>
+          className="product-link-overlay"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 2,
+            clipPath: onToggleSave ? 'polygon(0% 0%, calc(100% - 68px) 0%, calc(100% - 68px) 68px, 100% 68px, 100% 100%, 0% 100%)' : 'none',
+          }}
+          aria-label={`View details for ${product.name}`}
+        />
         {hasDiscount && (
           <span className="discount-tag-badge">
             {product.badge_text || `${product.discount_percentage}% OFF`}
