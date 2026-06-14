@@ -9,12 +9,17 @@ interface Message {
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { role: 'bot', content: 'Hi there! I\'m Neon, your personal toy expert. How can I help you today?' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -113,7 +118,8 @@ const ChatBot = () => {
       </button>
 
       {/* Chat Window */}
-      <div className={`chatbot-window ${isOpen ? 'open' : ''}`}>
+      {mounted && (
+        <div className={`chatbot-window ${isOpen ? 'open' : ''}`}>
         <div className="chat-header">
           <div className="bot-info">
             <div className="bot-status"></div>
@@ -158,6 +164,7 @@ const ChatBot = () => {
           </button>
         </div>
       </div>
+      )}
 
       <style jsx>{`
         .chatbot-container {
