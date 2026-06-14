@@ -99,7 +99,14 @@ export default function ProductCard({
       onContextMenu={handleContextMenu}
     >
       <div className="product-image-container">
-        <Link href={`/product/${createProductSlug(product.id, product.name)}`} className="product-link">
+        <Link 
+          href={`/product/${createProductSlug(product.id, product.name)}`} 
+          className="product-link"
+          style={onToggleSave ? {
+            display: 'block',
+            clipPath: 'polygon(0% 0%, calc(100% - 68px) 0%, calc(100% - 68px) 68px, 100% 68px, 100% 100%, 0% 100%)',
+          } : { display: 'block' }}
+        >
           <picture style={{ display: 'contents' }}>
             <source 
               media="(max-width: 640px)" 
