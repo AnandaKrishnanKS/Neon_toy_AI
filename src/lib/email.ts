@@ -96,7 +96,7 @@ function generateEmailHtml(order: any, type: 'placed' | 'processing' | 'cancelle
               <tr>
                 <td align="center" style="background: linear-gradient(135deg, #111827 0%, #1f2937 100%); padding: 30px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
                   <div style="font-size: 2.5rem; font-weight: 800; letter-spacing: 2px; color: #ffffff; text-decoration: none; display: inline-block;">
-                    <span style="background: linear-gradient(45deg, #ff3366, #00f2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ToTToys</span>
+                    <span style="background: linear-gradient(45deg, #ff3366, #00f2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ToTStore</span>
                   </div>
                   <div style="color: #9ca3af; font-size: 0.85rem; margin-top: 5px; letter-spacing: 1px; font-weight: 600; text-transform: uppercase;">Neon Toy Laboratory</div>
                 </td>
@@ -206,14 +206,14 @@ function generateEmailHtml(order: any, type: 'placed' | 'processing' | 'cancelle
                     </div>
                   ` : ''}
 
-                  <p style="color: #6b7280; font-size: 0.8rem; margin: 0;">If you have any questions, please contact our support team at <a href="mailto:support@tottoys.example.com" style="color: #00f2ff; text-decoration: none;">support@tottoys.example.com</a>.</p>
+                  <p style="color: #6b7280; font-size: 0.8rem; margin: 0;">If you have any questions, please contact our support team at <a href="mailto:support@totstore.example.com" style="color: #00f2ff; text-decoration: none;">support@totstore.example.com</a>.</p>
                 </td>
               </tr>
 
               <!-- Footer Banner -->
               <tr>
                 <td align="center" style="background-color: rgba(0, 0, 0, 0.2); padding: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
-                  <div style="color: #4b5563; font-size: 0.75rem; font-weight: 600;">&copy; 2026 ToTToys Inc. All Rights Reserved.</div>
+                  <div style="color: #4b5563; font-size: 0.75rem; font-weight: 600;">&copy; 2026 ToTStore Inc. All Rights Reserved.</div>
                   <div style="color: #4b5563; font-size: 0.7rem; margin-top: 4px;">Powered by Neon Toy AI Engine</div>
                 </td>
               </tr>
@@ -238,7 +238,7 @@ export async function sendOrderStatusEmail(
   const port = parseInt(process.env.SMTP_PORT || '587');
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
-  const from = process.env.SMTP_FROM || `"ToTToys" <no-reply@tottoys.example.com>`;
+  const from = process.env.SMTP_FROM || `"ToTStore" <no-reply@totstore.example.com>`;
 
   if (!host || !user || !pass) {
     console.warn('⚠️ SMTP details not configured. Unable to send direct email.');
@@ -256,7 +256,7 @@ export async function sendOrderStatusEmail(
       },
     });
 
-    let subject = 'ToTToys Order Update';
+    let subject = 'ToTStore Order Update';
     if (type === 'placed') {
       subject = `Order Confirmed! #${order.id ? `NT-${order.id}` : ''}`;
     } else if (type === 'processing') {
@@ -266,7 +266,7 @@ export async function sendOrderStatusEmail(
     } else if (type === 'refunded') {
       subject = `Refund Processed for Order #${order.id ? `NT-${order.id}` : ''}`;
     } else if (type === 'shipped') {
-      subject = `Your ToTToys Order has Shipped! #${order.id ? `NT-${order.id}` : ''}`;
+      subject = `Your ToTStore Order has Shipped! #${order.id ? `NT-${order.id}` : ''}`;
     } else if (type === 'delivered') {
       subject = `Order Delivered! #${order.id ? `NT-${order.id}` : ''}`;
     }

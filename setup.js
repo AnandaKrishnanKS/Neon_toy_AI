@@ -173,9 +173,9 @@ async function setup() {
       const defaultTerms = `# Terms and Conditions
 Last Updated: June 12, 2026
 
-Welcome to ToTToys!
+Welcome to ToTStore!
 
-These Terms and Conditions ("Terms") govern your use of the ToTToys website and store. By accessing or using our services, you agree to be bound by these Terms.
+These Terms and Conditions ("Terms") govern your use of the ToTStore website and store. By accessing or using our services, you agree to be bound by these Terms.
 
 ## 1. User Accounts
 When you create an account with us, you must provide information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account.
@@ -190,10 +190,10 @@ Delivery times may vary depending on the destination. We are not responsible for
 Please review our Refund Policy prior to making any purchases. Products can be returned within 30 days of purchase in their original condition and packaging.
 
 ## 5. Intellectual Property
-All content included on this site, such as text, graphics, logos, images, digital downloads, and software, is the property of ToTToys or its content suppliers and is protected by international copyright laws.
+All content included on this site, such as text, graphics, logos, images, digital downloads, and software, is the property of ToTStore or its content suppliers and is protected by international copyright laws.
 
 ## 6. Limitation of Liability
-To the maximum extent permitted by law, ToTToys shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues.
+To the maximum extent permitted by law, ToTStore shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues.
 
 ## 7. Governing Law
 These Terms shall be governed and construed in accordance with the laws of the country of operation, without regard to its conflict of law provisions.
@@ -202,7 +202,7 @@ These Terms shall be governed and construed in accordance with the laws of the c
 We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will notify you of any changes by posting the new Terms on this page.
 
 ## 9. Contact Us
-If you have any questions about these Terms, please contact us at support@tottoys.com.`;
+If you have any questions about these Terms, please contact us at support@totstore.com.`;
       
       await client.query('INSERT INTO terms_conditions (content) VALUES ($1)', [defaultTerms]);
       console.log('Seeded default terms and conditions.');

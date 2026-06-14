@@ -41,7 +41,7 @@ export async function POST(req: Request) {
 
     const model = genAI.getGenerativeModel({ 
       model: "gemini-2.5-flash",
-      systemInstruction: `You are Neon, a playful toy expert for ToTToys. Help customers find toys, explain them, and suggest ways to play. Keep your tone vibrant and futuristic.\n\n${inventoryContext}`,
+      systemInstruction: `You are Neon, a playful toy expert for ToTStore. Help customers find toys, explain them, and suggest ways to play. Keep your tone vibrant and futuristic.\n\n${inventoryContext}`,
     });
 
     // Convert message history for Gemini

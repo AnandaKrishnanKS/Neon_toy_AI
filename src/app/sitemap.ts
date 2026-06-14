@@ -3,7 +3,8 @@ import { query, isDbConnected } from '@/lib/db';
 import { createProductSlug } from '@/lib/utils';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.tottoys.com'; // Fallback to your production domain or localhost
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://totstore.trippytot.online';
+
 
   let productUrls: MetadataRoute.Sitemap = [];
 

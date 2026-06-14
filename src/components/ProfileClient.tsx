@@ -85,7 +85,7 @@ export default function ProfileClient({ user }: { user: User }) {
   return (
     <div className="profile-container">
       <nav className="navbar">
-        <Link href="/" className="nav-brand">ToTToys</Link>
+        <Link href="/" className="nav-brand">ToTStore</Link>
         <div className="nav-actions">
            <Link href="/" className="nav-link">Back to Shop</Link>
         </div>

@@ -119,7 +119,7 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: orderRes.order.amount,
         currency: orderRes.order.currency,
-        name: "ToTToys",
+        name: "ToTStore",
         description: "Toys Purchase",
         order_id: orderRes.order.id,
         handler: async function (response: any) {
@@ -183,7 +183,7 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
         <div className="success-content">
           <div className="success-icon">🎉</div>
           <h1>Order Placed Successfully!</h1>
-          <p>Thank you for shopping with ToTToys. Your order <strong>#NT-{orderId}</strong> is being processed.</p>
+          <p>Thank you for shopping with ToTStore. Your order <strong>#NT-{orderId}</strong> is being processed.</p>
           <div className="order-summary-box">
             <p><strong>Payment Method:</strong> {paymentMethod === 'cod' ? 'Cash on Delivery' : 'Razorpay Secure Payment'}</p>
             <p><strong>Delivery Address:</strong> {user.address}, {user.city} - {user.zipCode}</p>
@@ -220,7 +220,7 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
   return (
     <div className="checkout-container">
       <nav className="navbar">
-        <Link href="/" className="nav-brand">ToTToys</Link>
+        <Link href="/" className="nav-brand">ToTStore</Link>
         <div className="nav-actions">
            <Link href="/" className="nav-link">Cancel</Link>
         </div>

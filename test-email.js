@@ -37,13 +37,13 @@ async function testEmail() {
   const port = parseInt(process.env.SMTP_PORT || '587');
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
-  const from = process.env.SMTP_FROM || `"ToTToys" <no-reply@tottoys.example.com>`;
+  const from = process.env.SMTP_FROM || `"ToTStore" <no-reply@totstore.example.com>`;
 
   const args = process.argv.slice(2);
   const recipient = args[0] || user;
   const type = args[1] || 'placed'; // 'placed', 'cancelled', 'refunded', 'shipped', 'delivered'
 
-  console.log('--- ToTToys SMTP Test Script ---');
+  console.log('--- ToTStore SMTP Test Script ---');
   console.log(`SMTP Host: ${host}`);
   console.log(`SMTP Port: ${port}`);
   console.log(`SMTP User: ${user}`);
@@ -145,7 +145,7 @@ async function testEmail() {
               <tr>
                 <td align="center" style="background: linear-gradient(135deg, #111827 0%, #1f2937 100%); padding: 30px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
                   <div style="font-size: 2.5rem; font-weight: 800; letter-spacing: 2px; color: #ffffff;">
-                    <span style="background: linear-gradient(45deg, #ff3366, #00f2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ToTToys</span>
+                    <span style="background: linear-gradient(45deg, #ff3366, #00f2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ToTStore</span>
                   </div>
                 </td>
               </tr>
@@ -203,7 +203,7 @@ async function testEmail() {
               </tr>
               <tr>
                 <td align="center" style="padding: 10px 30px 40px 30px;">
-                  <p style="color: #6b7280; font-size: 0.8rem;">ToTToys Test Email Delivery</p>
+                  <p style="color: #6b7280; font-size: 0.8rem;">ToTStore Test Email Delivery</p>
                 </td>
               </tr>
             </table>

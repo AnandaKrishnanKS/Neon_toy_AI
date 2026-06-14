@@ -6,7 +6,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ToTToys | Premium Toy Store",
+  title: "ToTStore | Premium Toy Store",
   description: "Imagine. Build. Play.",
 };
 

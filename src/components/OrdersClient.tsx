@@ -51,7 +51,7 @@ export default function OrdersClient({ user, orders }: { user: User, orders: Ord
   return (
     <div className="orders-container">
       <nav className="navbar">
-        <Link href="/" className="nav-brand">ToTToys</Link>
+        <Link href="/" className="nav-brand">ToTStore</Link>
         <div className="nav-actions">
            <Link href="/profile" className="nav-link">Profile</Link>
            <Link href="/" className="nav-link">Shop</Link>
