@@ -6,6 +6,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://totstore.trippytot.online"),
   title: "ToTStore | Handmade Crafts & Custom Gifts",
   description: "Discover custom gifts and unique handcrafted creations at TotStore.",
 };
