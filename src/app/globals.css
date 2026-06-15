@@ -2050,8 +2050,51 @@ html {
 
 @media (max-width: 768px) {
   .deals-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .deal-card {
+    height: auto;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background-image: none !important;
+    background-color: var(--card-bg, #1f2937);
+    border: 1px solid var(--card-border, rgba(255, 255, 255, 0.1));
+    box-shadow: none;
+    flex: 0 1 auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    transform: none;
+  }
+  .deal-card:hover {
+    transform: scale(1.05);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 4px 12px rgba(0, 210, 255, 0.15);
+  }
+  .deal-card.active {
+    background: linear-gradient(45deg, var(--accent-pink), var(--accent-cyan)) !important;
+    border-color: transparent;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
+  }
+  .deal-card-overlay,
+  .deal-card-content,
+  .deal-active-indicator {
+    display: none !important;
+  }
+  .deal-card-badge {
+    position: static;
+    background: none !important;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: none;
+    letter-spacing: 0.02em;
   }
 }
 
