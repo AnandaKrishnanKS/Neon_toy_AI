@@ -7,13 +7,13 @@ import { Product, CartItem, User } from '@/lib/types';
 import Navbar from './Navbar';
 import CartDrawer from './CartDrawer';
 
-export default function ProductClient({ 
-  product, 
+export default function ProductClient({
+  product,
   initialCart = [],
   dbConnected,
   user: initialUser = null
-}: { 
-  product: Product, 
+}: {
+  product: Product,
   initialCart?: CartItem[],
   dbConnected: boolean,
   user?: User | null
@@ -98,8 +98,8 @@ export default function ProductClient({
 
   const hasDiscount = product.discount_percentage && product.discount_percentage > 0;
   const originalPrice = Number(product.price);
-  const discountedPrice = hasDiscount 
-    ? originalPrice * (1 - product.discount_percentage! / 100) 
+  const discountedPrice = hasDiscount
+    ? originalPrice * (1 - product.discount_percentage! / 100)
     : originalPrice;
 
   useEffect(() => {
@@ -202,8 +202,8 @@ export default function ProductClient({
       setLocalCart(current => {
         const existing = current.find(item => item.product_id === product.id);
         if (existing) {
-          return current.map(item => item.product_id === product.id 
-            ? { ...item, quantity: item.quantity + qty } 
+          return current.map(item => item.product_id === product.id
+            ? { ...item, quantity: item.quantity + qty }
             : item
           );
         }
@@ -254,10 +254,10 @@ export default function ProductClient({
 
   return (
     <>
-      <Navbar 
-        headerVisible={headerVisible} 
-        user={user} 
-        onLogin={handleLogin} 
+      <Navbar
+        headerVisible={headerVisible}
+        user={user}
+        onLogin={handleLogin}
         onOpenCart={() => setCartOpen(true)}
         cartCount={cartCount}
       />
@@ -267,9 +267,9 @@ export default function ProductClient({
           <div className="product-detail-content">
             <div className={`product-detail-image ${allImages.length > 1 ? 'has-gallery' : ''}`}>
               <div className="product-detail-image-main">
-                <img 
-                  src={selectedImage} 
-                  alt={product.name} 
+                <img
+                  src={selectedImage}
+                  alt={product.name}
                   fetchPriority="high"
                   loading="eager"
                 />
@@ -331,8 +331,8 @@ export default function ProductClient({
                 <p>Enjoy free shipping on orders over ₹100 and a 30-day money-back guarantee on all our premium toys.</p>
               </div>
               <div className="product-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                <button 
-                  className="add-to-cart-big" 
+                <button
+                  className="add-to-cart-big"
                   onClick={() => handleAddToCart(1)}
                   disabled={stock <= 0}
                   style={{
@@ -344,12 +344,12 @@ export default function ProductClient({
                 </button>
                 {stock <= 0 && (
                   <div className="whatsapp-contact-wrapper">
-                    <a 
-                      href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '7025915922'}?text=${encodeURIComponent(
+                    <a
+                      href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=${encodeURIComponent(
                         `Hi! I am interested in "${product.name}" (SKU: NT-${product.id.toString().padStart(4, '0')}). Can you provide more details?`
                       )}`}
-                      target="_blank" 
-                      rel="noopener noreferrer" 
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="whatsapp-contact-btn"
                       aria-label="Contact on WhatsApp for custom orders"
                     >
@@ -361,7 +361,7 @@ export default function ProductClient({
                   </div>
                 )}
                 {dbConnected && (
-                  <button 
+                  <button
                     onClick={handleToggleSave}
                     style={{
                       display: 'inline-flex',
@@ -406,11 +406,11 @@ export default function ProductClient({
         </div>
       </main>
 
-      <CartDrawer 
-        isOpen={cartOpen} 
-        onClose={() => setCartOpen(false)} 
-        items={itemsToRender} 
-        onUpdateQty={handleUpdateQty} 
+      <CartDrawer
+        isOpen={cartOpen}
+        onClose={() => setCartOpen(false)}
+        items={itemsToRender}
+        onUpdateQty={handleUpdateQty}
         total={cartTotal}
         savedItems={dbConnected ? savedProducts : []}
         onAddSavedToCart={handleAddSavedToCart}

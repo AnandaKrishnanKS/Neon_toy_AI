@@ -17,7 +17,7 @@ export default function Footer() {
           setUser(data);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const handleSendHelp = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -53,7 +53,7 @@ export default function Footer() {
           <span>&copy; {new Date().getFullYear()} ToTstore. All Rights Reserved.</span>
           <span className="footer-divider">|</span>
           <Link href="/terms" className="footer-link">
-            Terms & Conditions
+            T&C
           </Link>
         </div>
         <div className="footer-center">
@@ -115,7 +115,7 @@ export default function Footer() {
             borderBottom: '1px solid #3e4042'
           }}>
             <span style={{ color: '#e4e6eb', fontWeight: '600', fontSize: '15px' }}>Support Chat</span>
-            <button 
+            <button
               onClick={() => setShowChat(false)}
               style={{ background: 'transparent', border: 'none', color: '#b0b3b8', cursor: 'pointer', fontSize: '20px', lineHeight: '1', minWidth: '44px', minHeight: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               aria-label="Close support chat"
@@ -136,10 +136,10 @@ export default function Footer() {
                 <p style={{ color: '#e4e6eb', margin: '0 0 4px 0', fontSize: '14px' }}>
                   Hi there! 👋 How can we help you today?
                 </p>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   name="email"
-                  required 
+                  required
                   placeholder="Your Email"
                   defaultValue={user?.email || ''}
                   style={{
@@ -152,10 +152,10 @@ export default function Footer() {
                     outline: 'none'
                   }}
                 />
-                <textarea 
+                <textarea
                   name="message"
                   required
-                  placeholder="How can we help?" 
+                  placeholder="How can we help?"
                   rows={3}
                   style={{
                     padding: '10px',
@@ -168,7 +168,7 @@ export default function Footer() {
                     resize: 'none'
                   }}
                 />
-                <button 
+                <button
                   type="submit"
                   disabled={chatStatus === 'sending'}
                   style={{
