@@ -18,8 +18,6 @@ export default function ProfileClient({ user }: { user: User }) {
     zipCode: user.zipCode || ''
   });
   const [theme, setTheme] = useState('dark');
-  const [showChat, setShowChat] = useState(false);
-  const [chatStatus, setChatStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -56,31 +54,7 @@ export default function ProfileClient({ user }: { user: User }) {
     router.refresh();
   };
 
-  const handleSendHelp = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setChatStatus('sending');
 
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get('email');
-    const message = formData.get('message');
-
-    const webhookUrl = process.env.NEXT_PUBLIC_SLACK_WEBHOOK_URL;
-
-    if (webhookUrl) {
-      try {
-        await fetch(webhookUrl, {
-          method: 'POST',
-          body: JSON.stringify({
-            text: `🛎️ *User Support Request*\n*From:* ${email}\n*Message:* ${message}`
-          })
-        });
-      } catch (err) {
-        console.error('Failed to send to Slack:', err);
-      }
-    }
-
-    setChatStatus('sent');
-  };
 
   return (
     <div className="profile-container">
@@ -197,188 +171,9 @@ export default function ProfileClient({ user }: { user: User }) {
 
           <div className="profile-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             <button onClick={handleLogout} className="logout-btn">Log Out</button>
-            <button 
-              onClick={() => {
-                setShowChat(true);
-                setChatStatus('idle');
-              }}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                padding: '12px 20px',
-                backgroundColor: '#3a3b3c',
-                color: '#e4e6eb',
-                fontSize: '15px',
-                fontWeight: '600',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(0, 210, 255, 0.15)';
-                e.currentTarget.style.color = 'var(--accent-cyan)';
-                e.currentTarget.style.boxShadow = '0 0 10px rgba(0, 210, 255, 0.3)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.backgroundColor = '#3a3b3c';
-                e.currentTarget.style.color = '#e4e6eb';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-              </svg>
-              <span>Get Help</span>
-            </button>
-            <Link 
-              href="/terms"
-              title="Terms & Conditions"
-              aria-label="Terms & Conditions"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                padding: '12px 20px',
-                backgroundColor: '#3a3b3c',
-                color: '#e4e6eb',
-                fontSize: '15px',
-                fontWeight: '600',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                textDecoration: 'none'
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(0, 210, 255, 0.15)';
-                e.currentTarget.style.color = 'var(--accent-cyan)';
-                e.currentTarget.style.boxShadow = '0 0 10px rgba(0, 210, 255, 0.3)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.backgroundColor = '#3a3b3c';
-                e.currentTarget.style.color = '#e4e6eb';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
-              </svg>
-              <span>T&C</span>
-            </Link>
           </div>
         </div>
       </main>
-
-      {/* Chatbot Modal */}
-      {showChat && (
-        <div style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          width: '320px',
-          backgroundColor: '#242526',
-          borderRadius: '12px',
-          boxShadow: '0 12px 28px rgba(0,0,0,0.4)',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-          zIndex: 10000,
-          border: '1px solid #3e4042'
-        }}>
-          {/* Header */}
-          <div style={{
-            backgroundColor: '#3a3b3c',
-            padding: '12px 16px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: '1px solid #3e4042'
-          }}>
-            <span style={{ color: '#e4e6eb', fontWeight: '600', fontSize: '15px' }}>Support Chat</span>
-            <button 
-              onClick={() => setShowChat(false)}
-              style={{ background: 'transparent', border: 'none', color: '#b0b3b8', cursor: 'pointer', fontSize: '20px', lineHeight: '1', minWidth: '44px', minHeight: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              aria-label="Close support chat"
-            >
-              &times;
-            </button>
-          </div>
-
-          {/* Body */}
-          <div style={{ padding: '16px' }}>
-            {chatStatus === 'sent' ? (
-              <div style={{ textAlign: 'center', color: '#e4e6eb', padding: '20px 0' }}>
-                <div style={{ fontSize: '30px', marginBottom: '10px' }}>✅</div>
-                <p style={{ margin: 0, fontSize: '15px' }}>Thanks! Our team has received your message.</p>
-              </div>
-            ) : (
-              <form onSubmit={handleSendHelp} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <p style={{ color: '#e4e6eb', margin: '0 0 4px 0', fontSize: '14px' }}>
-                  Hi there! 👋 How can we help you today?
-                </p>
-                <input 
-                  type="email" 
-                  name="email"
-                  required 
-                  placeholder="Your Email"
-                  defaultValue={user.email}
-                  style={{
-                    padding: '10px',
-                    borderRadius: '6px',
-                    border: '1px solid #3e4042',
-                    backgroundColor: '#3a3b3c',
-                    color: '#e4e6eb',
-                    fontSize: '14px',
-                    outline: 'none'
-                  }}
-                />
-                <textarea 
-                  name="message"
-                  required
-                  placeholder="How can we help?" 
-                  rows={3}
-                  style={{
-                    padding: '10px',
-                    borderRadius: '6px',
-                    border: '1px solid #3e4042',
-                    backgroundColor: '#3a3b3c',
-                    color: '#e4e6eb',
-                    fontSize: '14px',
-                    outline: 'none',
-                    resize: 'none'
-                  }}
-                />
-                <button 
-                  type="submit"
-                  disabled={chatStatus === 'sending'}
-                  style={{
-                    padding: '10px',
-                    backgroundColor: '#1877f2',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '6px',
-                    fontWeight: '600',
-                    cursor: chatStatus === 'sending' ? 'not-allowed' : 'pointer',
-                    opacity: chatStatus === 'sending' ? 0.7 : 1
-                  }}
-                >
-                  {chatStatus === 'sending' ? 'Sending...' : 'Send Message'}
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

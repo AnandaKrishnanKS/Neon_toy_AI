@@ -37,6 +37,8 @@ body {
   overflow-x: hidden;
   width: 100%;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 html {
@@ -2615,6 +2617,87 @@ html {
 .whatsapp-card-btn .whatsapp-icon {
   width: 22px;
   height: 22px;
+}
+
+/* Footer Styling */
+.footer {
+  width: 100%;
+  padding: 24px 5%;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  z-index: 900;
+}
+
+@media (max-width: 600px) {
+  .footer {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    padding: 20px;
+  }
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 600px) {
+  .footer-left {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.footer-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-link:hover {
+  color: var(--accent-cyan);
+}
+
+.footer-divider {
+  color: var(--glass-border);
+}
+
+@media (max-width: 600px) {
+  .footer-divider {
+    display: none;
+  }
+}
+
+.footer-get-help-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #3a3b3c;
+  color: #e4e6eb;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.footer-get-help-btn:hover {
+  background-color: rgba(0, 210, 255, 0.15);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
 }
 
 
