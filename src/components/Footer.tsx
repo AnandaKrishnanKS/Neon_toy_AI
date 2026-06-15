@@ -50,7 +50,17 @@ export default function Footer() {
     <>
       <footer className="footer">
         <div className="footer-left">
-          <span>&copy; {new Date().getFullYear()} ToTstore. All Rights Reserved.</span>
+          <span>
+            &copy; {new Date().getFullYear()} ToTstore. All Rights Reserved. Made with love -{' '}
+            <a
+              href="https://instagram.com/trippy_tot"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-instagram-link"
+            >
+              @trippy_tot
+            </a>
+          </span>
           <span className="footer-divider">|</span>
           <Link href="/terms" className="footer-link">
             Terms & Conditions
