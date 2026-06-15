@@ -2607,6 +2607,16 @@ html {
   transform: translateX(-50%) translateY(0);
 }
 
+.whatsapp-card-btn {
+  width: 42px;
+  height: 42px;
+}
+
+.whatsapp-card-btn .whatsapp-icon {
+  width: 22px;
+  height: 22px;
+}
+
 
 
 
