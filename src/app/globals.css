@@ -83,7 +83,43 @@ html {
   background: linear-gradient(to right, var(--accent-pink), var(--accent-cyan));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.brand-text {
+  background: inherit;
+  -webkit-background-clip: inherit;
+  -webkit-text-fill-color: inherit;
+  background-clip: inherit;
+}
+
+.brand-o {
+  height: 0.9em;
+  width: 0.9em;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 0.03em;
+  border: 1.5px solid var(--accent-pink);
+  display: inline-block;
+  background: none;
+  background-clip: border-box;
+  -webkit-background-clip: border-box;
+  -webkit-text-fill-color: initial;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .nav-actions {

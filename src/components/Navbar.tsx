@@ -18,7 +18,12 @@ export default function Navbar({
 }: NavbarProps) {
   return (
     <nav className={`navbar ${!headerVisible ? 'navbar--hidden' : ''}`}>
-      <a href="/" className="nav-brand">ToTStore</a>
+      <a href="/" className="nav-brand" aria-label="ToTStore">
+        <span className="sr-only">ToTStore</span>
+        <span className="brand-text" aria-hidden="true">T</span>
+        <img src="/logo-o.jpg" alt="" className="brand-o" aria-hidden="true" />
+        <span className="brand-text" aria-hidden="true">TStore</span>
+      </a>
 
       <div className="nav-actions">
         {user ? (

@@ -220,7 +220,12 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
   return (
     <div className="checkout-container">
       <nav className="navbar">
-        <Link href="/" className="nav-brand">ToTStore</Link>
+        <Link href="/" className="nav-brand" aria-label="ToTStore">
+          <span className="sr-only">ToTStore</span>
+          <span className="brand-text" aria-hidden="true">T</span>
+          <img src="/logo-o.jpg" alt="" className="brand-o" aria-hidden="true" />
+          <span className="brand-text" aria-hidden="true">TStore</span>
+        </Link>
         <div className="nav-actions">
            <Link href="/" className="nav-link">Cancel</Link>
         </div>
