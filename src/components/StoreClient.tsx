@@ -333,7 +333,12 @@ export default function StoreClient({
           {offers && offers.length > 0 && (
             <button 
               className={`deals-toggle-btn ${showDeals ? 'active' : ''}`}
-              onClick={() => setShowDeals(!showDeals)}
+              onClick={() => {
+                if (showDeals) {
+                  setActiveOfferId(null);
+                }
+                setShowDeals(!showDeals);
+              }}
               style={{ marginTop: '5px' }}
             >
               {showDeals ? '⚡ Hide Hot Deals' : '🔥 View Hot Deals & Offers'}
