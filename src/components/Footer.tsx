@@ -50,8 +50,15 @@ export default function Footer() {
     <>
       <footer className="footer">
         <div className="footer-left">
+          <span>&copy; {new Date().getFullYear()} ToTstore. All Rights Reserved.</span>
+          <span className="footer-divider">|</span>
+          <Link href="/terms" className="footer-link">
+            Terms & Conditions
+          </Link>
+        </div>
+        <div className="footer-center">
           <span>
-            &copy; {new Date().getFullYear()} ToTstore. All Rights Reserved. Made with love -{' '}
+            Made with ❤️ -{' '}
             <a
               href="https://instagram.com/trippy_tot"
               target="_blank"
@@ -61,26 +68,24 @@ export default function Footer() {
               @trippy_tot
             </a>
           </span>
-          <span className="footer-divider">|</span>
-          <Link href="/terms" className="footer-link">
-            Terms & Conditions
-          </Link>
         </div>
-        <button
-          onClick={() => {
-            setShowChat(true);
-            setChatStatus('idle');
-          }}
-          className="footer-get-help-btn"
-          aria-label="Get Help Support Request"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-          </svg>
-          <span>Get Help</span>
-        </button>
+        <div className="footer-right">
+          <button
+            onClick={() => {
+              setShowChat(true);
+              setChatStatus('idle');
+            }}
+            className="footer-get-help-btn"
+            aria-label="Get Help Support Request"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span>Get Help</span>
+          </button>
+        </div>
       </footer>
 
       {/* Support Chat Request Modal */}
