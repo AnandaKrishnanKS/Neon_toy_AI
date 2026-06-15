@@ -191,7 +191,7 @@ export default function ProductCard({
               )}
             </div>
           )}
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginLeft: isOutOfStock ? 'auto' : '0' }}>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', margin: isOutOfStock ? '0 auto' : '0' }}>
             <button 
               className="add-to-cart-btn"
               onClick={() => onAddToCart(product)}
