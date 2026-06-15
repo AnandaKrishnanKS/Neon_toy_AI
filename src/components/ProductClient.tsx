@@ -346,7 +346,7 @@ export default function ProductClient({
                   <div className="whatsapp-contact-wrapper">
                     <a 
                       href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '7025915922'}?text=${encodeURIComponent(
-                        `Hi! I am interested in custom ordering "${product.name}" (SKU: NT-${product.id.toString().padStart(4, '0')}). Can you provide more details?`
+                        `Hi! I am interested in "${product.name}" (SKU: NT-${product.id.toString().padStart(4, '0')}). Can you provide more details?`
                       )}`}
                       target="_blank" 
                       rel="noopener noreferrer" 
