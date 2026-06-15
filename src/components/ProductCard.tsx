@@ -25,6 +25,7 @@ export default function ProductCard({
   const discountedPrice = hasDiscount 
     ? originalPrice * (1 - product.discount_percentage! / 100) 
     : originalPrice;
+  const isOutOfStock = product.stock_count !== undefined && product.stock_count <= 0;
 
   const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isLongPressRef = useRef(false);
@@ -126,7 +127,7 @@ export default function ProductCard({
           }}
           aria-label={`View details for ${product.name}`}
         />
-        {hasDiscount && (
+        {hasDiscount && !isOutOfStock && (
           <span className="discount-tag-badge">
             {product.badge_text || `${product.discount_percentage}% OFF`}
           </span>
@@ -182,22 +183,24 @@ export default function ProductCard({
         </Link>
         <p className="product-desc">{product.description}</p>
         <div className="product-footer">
-          <div className="product-price-wrapper">
-            <span className="product-price">₹{discountedPrice.toFixed(2)}</span>
-            {hasDiscount && (
-              <span className="product-price-original">₹{originalPrice.toFixed(2)}</span>
-            )}
-          </div>
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          {!isOutOfStock && (
+            <div className="product-price-wrapper">
+              <span className="product-price">₹{discountedPrice.toFixed(2)}</span>
+              {hasDiscount && (
+                <span className="product-price-original">₹{originalPrice.toFixed(2)}</span>
+              )}
+            </div>
+          )}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginLeft: isOutOfStock ? 'auto' : '0' }}>
             <button 
               className="add-to-cart-btn"
               onClick={() => onAddToCart(product)}
-              disabled={product.stock_count !== undefined && product.stock_count <= 0}
-              style={product.stock_count !== undefined && product.stock_count <= 0 ? { opacity: 0.5, cursor: 'not-allowed', background: '#ccc' } : {}}
+              disabled={isOutOfStock}
+              style={isOutOfStock ? { opacity: 0.5, cursor: 'not-allowed', background: '#ccc' } : {}}
             >
-              {product.stock_count !== undefined && product.stock_count <= 0 ? 'Out of Stock' : 'Add to Cart'}
+              {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
             </button>
-            {product.stock_count !== undefined && product.stock_count <= 0 && (
+            {isOutOfStock && (
               <div className="whatsapp-contact-wrapper">
                 <a 
                   href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '7025915922'}?text=${encodeURIComponent(
