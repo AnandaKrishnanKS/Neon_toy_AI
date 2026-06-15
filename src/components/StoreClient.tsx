@@ -321,48 +321,6 @@ export default function StoreClient({
 
         <Hero />
 
-        {offers && offers.length > 0 && (
-          <div className="deals-toggle-container" style={{ display: 'flex', justifyContent: 'center', marginBottom: '25px' }}>
-            <button 
-              className={`deals-toggle-btn ${showDeals ? 'active' : ''}`}
-              onClick={() => setShowDeals(!showDeals)}
-            >
-              {showDeals ? '⚡ Hide Hot Deals' : '🔥 View Hot Deals & Offers'}
-              <span className="deals-count-indicator">{offers.length}</span>
-            </button>
-          </div>
-        )}
-
-        {offers && offers.length > 0 && (
-          <section className={`deals-section ${showDeals ? 'expanded' : 'collapsed'}`}>
-            <div className="deals-grid-buttons">
-              {offers.map(offer => {
-                const badgeText = offer.badge_text || `${offer.discount_percentage}% OFF`;
-                const isHotDeal = badgeText.toLowerCase().includes('hot') || badgeText.toLowerCase().includes('deal');
-                const emoji = isHotDeal ? '🔥' : '⚡';
-                const displayText = `${emoji} ${badgeText}`;
-
-                return (
-                  <button 
-                    key={offer.id} 
-                    className={`deal-button ${activeOfferId === offer.id ? 'active' : ''}`}
-                    onClick={() => setActiveOfferId(activeOfferId === offer.id ? null : offer.id)}
-                  >
-                    {displayText}
-                  </button>
-                );
-              })}
-            </div>
-            {activeOfferId !== null && (
-              <div className="clear-deal-filter-container">
-                <button className="clear-deal-filter-btn" onClick={() => setActiveOfferId(null)}>
-                  Showing deals for "{offers.find(o => o.id === activeOfferId)?.title}". Click to view all toys. ✕
-                </button>
-              </div>
-            )}
-          </section>
-        )}
-
         <div className="filters-container">
           <input 
             type="text" 
@@ -371,17 +329,50 @@ export default function StoreClient({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <div className="category-tags">
-            {CATEGORIES.map(category => (
-              <button 
-                key={category}
-                className={`category-tag ${activeCategory === category ? 'active' : ''}`}
-                onClick={() => setActiveCategory(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
+
+          {offers && offers.length > 0 && (
+            <button 
+              className={`deals-toggle-btn ${showDeals ? 'active' : ''}`}
+              onClick={() => setShowDeals(!showDeals)}
+              style={{ marginTop: '5px' }}
+            >
+              {showDeals ? '⚡ Hide Hot Deals' : '🔥 View Hot Deals & Offers'}
+              <span className="deals-count-indicator">{offers.length}</span>
+            </button>
+          )}
+
+          {offers && offers.length > 0 && (
+            <section 
+              className={`deals-section ${showDeals ? 'expanded' : 'collapsed'}`}
+              style={{ width: '100%', padding: showDeals ? '12px 0' : '0', margin: 0 }}
+            >
+              <div className="deals-grid-buttons">
+                {offers.map(offer => {
+                  const badgeText = offer.badge_text || `${offer.discount_percentage}% OFF`;
+                  const isHotDeal = badgeText.toLowerCase().includes('hot') || badgeText.toLowerCase().includes('deal');
+                  const emoji = isHotDeal ? '🔥' : '⚡';
+                  const displayText = `${emoji} ${badgeText}`;
+
+                  return (
+                    <button 
+                      key={offer.id} 
+                      className={`deal-button ${activeOfferId === offer.id ? 'active' : ''}`}
+                      onClick={() => setActiveOfferId(activeOfferId === offer.id ? null : offer.id)}
+                    >
+                      {displayText}
+                    </button>
+                  );
+                })}
+              </div>
+              {activeOfferId !== null && (
+                <div className="clear-deal-filter-container" style={{ justifyContent: 'center' }}>
+                  <button className="clear-deal-filter-btn" onClick={() => setActiveOfferId(null)}>
+                    Showing deals for "{offers.find(o => o.id === activeOfferId)?.title}". Click to view all toys. ✕
+                  </button>
+                </div>
+              )}
+            </section>
+          )}
         </div>
 
         <section className="product-grid">
