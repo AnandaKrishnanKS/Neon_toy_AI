@@ -74,11 +74,11 @@ If you have any questions about these Terms, please contact us at support@totsto
   return (
     <div className="terms-container">
       <nav className="navbar">
-        <Link href="/" className="nav-brand" aria-label="ToTStore">
-          <span className="sr-only">ToTStore</span>
+        <Link href="/" className="nav-brand" aria-label="ToTstore">
+          <span className="sr-only">ToTstore</span>
           <span className="brand-text" aria-hidden="true">T</span>
           <img src="/logo-o.jpg" alt="" className="brand-o" aria-hidden="true" />
-          <span className="brand-text" aria-hidden="true">TStore</span>
+          <span className="brand-text" aria-hidden="true">Tstore</span>
         </Link>
         <div className="nav-actions">
            <Link href="/profile" className="nav-link">Profile</Link>
