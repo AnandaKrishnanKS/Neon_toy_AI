@@ -369,13 +369,6 @@ export default function StoreClient({
                   );
                 })}
               </div>
-              {activeOfferId !== null && (
-                <div className="clear-deal-filter-container" style={{ justifyContent: 'center' }}>
-                  <button className="clear-deal-filter-btn" onClick={() => setActiveOfferId(null)}>
-                    Showing deals for "{offers.find(o => o.id === activeOfferId)?.title}". Click to view all toys. ✕
-                  </button>
-                </div>
-              )}
             </section>
           )}
         </div>
