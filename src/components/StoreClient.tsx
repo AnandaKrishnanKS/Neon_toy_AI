@@ -335,27 +335,23 @@ export default function StoreClient({
 
         {offers && offers.length > 0 && (
           <section className={`deals-section ${showDeals ? 'expanded' : 'collapsed'}`}>
-            <div className="deals-grid">
-              {offers.map(offer => (
-                <div 
-                  key={offer.id} 
-                  className={`deal-card ${activeOfferId === offer.id ? 'active' : ''}`}
-                  onClick={() => setActiveOfferId(activeOfferId === offer.id ? null : offer.id)}
-                  style={{ '--bg-image': `url(${offer.banner_url})` } as React.CSSProperties}
-                >
-                  <div className="deal-card-overlay"></div>
-                  <div className="deal-card-badge">{offer.badge_text || `${offer.discount_percentage}% OFF`}</div>
-                  <div className="deal-card-content">
-                    <h2>{offer.title}</h2>
-                    <p>{offer.description}</p>
-                  </div>
-                  {activeOfferId === offer.id && (
-                    <div className="deal-active-indicator">
-                      <span>Active Filter</span>
-                    </div>
-                  )}
-                </div>
-              ))}
+            <div className="deals-grid-buttons">
+              {offers.map(offer => {
+                const badgeText = offer.badge_text || `${offer.discount_percentage}% OFF`;
+                const isHotDeal = badgeText.toLowerCase().includes('hot') || badgeText.toLowerCase().includes('deal');
+                const emoji = isHotDeal ? '🔥' : '⚡';
+                const displayText = `${emoji} ${badgeText}`;
+
+                return (
+                  <button 
+                    key={offer.id} 
+                    className={`deal-button ${activeOfferId === offer.id ? 'active' : ''}`}
+                    onClick={() => setActiveOfferId(activeOfferId === offer.id ? null : offer.id)}
+                  >
+                    {displayText}
+                  </button>
+                );
+              })}
             </div>
             {activeOfferId !== null && (
               <div className="clear-deal-filter-container">
