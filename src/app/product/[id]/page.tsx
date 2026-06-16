@@ -16,6 +16,8 @@ export async function generateStaticParams() {
   }
 }
 
+export const revalidate = 0; // Dynamic rendering, always fetch fresh product info on request
+
 export default async function ProductPage({ 
   params 
 }: { 

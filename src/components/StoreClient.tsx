@@ -12,7 +12,7 @@ import ReviewTicker from './ReviewTicker';
 import QuickViewModal from './QuickViewModal';
 
 const PAGE_SIZE = 9;
-const CATEGORIES = ["All", "Vehicles", "Plush", "STEM", "Action"];
+const DEFAULT_CATEGORIES = ["All", "Vehicles", "Plush", "STEM", "Action"];
 
 export default function StoreClient({ 
   initialProducts, 
@@ -20,15 +20,20 @@ export default function StoreClient({
   dbConnected,
   user: initialUser = null,
   totalProducts,
-  offers = []
+  offers = [],
+  categories = []
 }: { 
   initialProducts: Product[], 
   initialCart?: CartItem[],
   dbConnected: boolean,
   user?: User | null,
   totalProducts: number,
-  offers?: any[]
+  offers?: any[],
+  categories?: string[]
 }) {
+  const categoriesList = categories && categories.length > 0
+    ? ["All", ...categories]
+    : DEFAULT_CATEGORIES;
   const router = useRouter();
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>(initialCart);
@@ -333,6 +338,18 @@ export default function StoreClient({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
+
+          <div className="category-tags">
+            {categoriesList.map(category => (
+              <button 
+                key={category} 
+                className={`category-tag ${activeCategory.toLowerCase() === category.toLowerCase() ? 'active' : ''}`}
+                onClick={() => setActiveCategory(category)}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
 
           {offers && offers.length > 0 && (
             <button 

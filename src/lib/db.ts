@@ -86,3 +86,14 @@ export async function query(sql: string, params?: any[]) {
   }
   return pool.query(sql, params);
 }
+
+export async function getCategories(): Promise<string[]> {
+  try {
+    const res = await query("SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND category != '' ORDER BY category ASC");
+    return res.rows.map(r => r.category);
+  } catch (error) {
+    console.error('Error fetching categories from database:', error);
+    return [];
+  }
+}
+
