@@ -12,11 +12,11 @@ interface CartDrawerProps {
   onUnsaveProduct?: (productId: number) => void;
 }
 
-export default function CartDrawer({ 
-  isOpen, 
-  onClose, 
-  items, 
-  onUpdateQty, 
+export default function CartDrawer({
+  isOpen,
+  onClose,
+  items,
+  onUpdateQty,
   total,
   savedItems = [],
   onAddSavedToCart,
@@ -31,15 +31,15 @@ export default function CartDrawer({
         </div>
 
         <div className="shipping-progress">
-          {total >= 100 ? (
+          {total >= 999 ? (
             <p className="shipping-text success">🎉 You've unlocked <strong>FREE Premium Shipping!</strong></p>
           ) : (
-            <p className="shipping-text">You are <strong>₹{(100 - total).toFixed(2)}</strong> away from FREE shipping!</p>
+            <p className="shipping-text">You are <strong>₹{(999 - total).toFixed(2)}</strong> away from FREE shipping!</p>
           )}
           <div className="progress-bar-bg">
-            <div 
-              className={`progress-bar-fill ${total >= 100 ? 'complete' : ''}`} 
-              style={{ width: `${Math.min((total / 100) * 100, 100)}%` }}
+            <div
+              className={`progress-bar-fill ${total >= 999 ? 'complete' : ''}`}
+              style={{ width: `${Math.min((total / 999) * 100, 100)}%` }}
             ></div>
           </div>
         </div>
@@ -106,7 +106,7 @@ export default function CartDrawer({
                       <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
                         {onAddSavedToCart && (
                           item.stock_count !== undefined && item.stock_count <= 0 ? (
-                            <span 
+                            <span
                               style={{
                                 padding: '6px 12px',
                                 backgroundColor: 'rgba(255, 255, 255, 0.05)',
@@ -121,7 +121,7 @@ export default function CartDrawer({
                               Out of Stock
                             </span>
                           ) : (
-                            <button 
+                            <button
                               onClick={() => onAddSavedToCart(item)}
                               style={{
                                 padding: '6px 12px',
@@ -142,7 +142,7 @@ export default function CartDrawer({
                           )
                         )}
                         {onUnsaveProduct && (
-                          <button 
+                          <button
                             onClick={() => onUnsaveProduct(item.id)}
                             style={{
                               padding: '6px 12px',
@@ -176,8 +176,8 @@ export default function CartDrawer({
               <span>Total</span>
               <span>₹{total.toFixed(2)}</span>
             </div>
-            <button 
-              className="checkout-btn" 
+            <button
+              className="checkout-btn"
               onClick={() => window.location.href = '/checkout'}
             >
               Checkout Now
