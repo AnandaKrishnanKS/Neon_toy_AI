@@ -26,7 +26,7 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'razorpay'>('cod');
   const [emailSent, setEmailSent] = useState<boolean | null>(null);
 
-  const totalPayable = cartTotal >= 999 ? cartTotal : cartTotal + 10;
+  const totalPayable = cartTotal >= 999 ? cartTotal : cartTotal + 69;
 
   const totalSavings = cartItems.reduce((sum, item) => {
     const original = item.original_price || item.price;
@@ -348,7 +348,7 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
                 )}
                 <div className="summary-row">
                   <span>Shipping</span>
-                  <span>{cartTotal >= 999 ? 'FREE' : '₹10.00'}</span>
+                  <span>{cartTotal >= 999 ? 'FREE' : '₹69.00'}</span>
                 </div>
                 <div className="summary-row grand-total">
                   <span>Total Payable</span>

@@ -94,7 +94,7 @@ async function testEmail() {
     `;
   });
 
-  const shippingCost = subtotal - totalSavings >= 100 ? 0 : 10;
+  const shippingCost = subtotal - totalSavings >= 999 ? 0 : 69;
   const grandTotal = (subtotal - totalSavings) + shippingCost;
 
   // Header and styling depending on type

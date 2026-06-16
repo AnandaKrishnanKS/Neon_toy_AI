@@ -75,7 +75,7 @@ function generateEmailHtml(order: any, type: 'placed' | 'processing' | 'cancelle
     });
   }
 
-  const shippingCost = subtotal - totalSavings >= 999 ? 0 : 10;
+  const shippingCost = subtotal - totalSavings >= 999 ? 0 : 69;
   const grandTotal = (subtotal - totalSavings) + shippingCost;
 
   return `
