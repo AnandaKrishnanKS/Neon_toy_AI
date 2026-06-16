@@ -328,7 +328,7 @@ export default function ProductClient({
 
               <div className="product-detail-desc">
                 <p>{product.description}</p>
-                <p>Enjoy free shipping on orders over ₹100 and a 30-day money-back guarantee on all our premium toys.</p>
+                <p>Enjoy free shipping on orders over ₹999 and a 10-day replacement guarantee on all our premium products*.</p>
               </div>
               <div className="product-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                 <button
