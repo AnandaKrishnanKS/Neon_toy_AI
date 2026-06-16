@@ -282,6 +282,10 @@ export default function StoreClient({
     
     if (activeCategory === "All") return true;
 
+    if (dbConnected && p.category) {
+      return p.category.toLowerCase() === activeCategory.toLowerCase();
+    }
+
     const n = p.name.toLowerCase();
     const d = p.description.toLowerCase();
 

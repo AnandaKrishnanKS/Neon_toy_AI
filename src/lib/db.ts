@@ -24,6 +24,7 @@ export type Product = {
   offer_active?: boolean | null;
   images?: string[] | null;
   stock_count?: number;
+  category?: string;
 };
 
 export async function getActiveOffers(): Promise<any[]> {

@@ -398,7 +398,7 @@ export default function ProductClient({
                   <strong>SKU:</strong> NT-{product.id.toString().padStart(4, '0')}
                 </div>
                 <div className="meta-item">
-                  <strong>Category:</strong> Premium Toys
+                  <strong>Category:</strong> {product.category || 'Premium Toys'}
                 </div>
               </div>
             </div>
