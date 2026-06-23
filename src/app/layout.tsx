@@ -33,6 +33,11 @@ export const metadata: Metadata = {
       "Shop unique handmade crafts, custom gifts, and one-of-a-kind creations at ToTstore. Thoughtfully crafted with love — find the perfect gift for every occasion.",
     images: ["/twitter-image.png"],
   },
+  icons: {
+    icon: "/logo-o.jpg",
+    shortcut: "/logo-o.jpg",
+    apple: "/logo-o.jpg",
+  },
 };
 
 import ChatBot from "@/components/ChatBot";
