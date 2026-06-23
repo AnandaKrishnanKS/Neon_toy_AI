@@ -14,29 +14,6 @@ export async function GET(request: Request) {
     const fallbackImage = 'https://totstore.trippytot.online/logo-o.jpg';
     const finalImageUrl = imageUrl || fallbackImage;
 
-    // Convert relative URLs to absolute URLs
-    let base64Image = '';
-    if (finalImageUrl) {
-      try {
-        const imgRes = await fetch(finalImageUrl);
-        if (imgRes.ok) {
-          const buffer = await imgRes.arrayBuffer();
-          // Safe conversion loop to prevent "Maximum call stack size exceeded" RangeError
-          let binary = '';
-          const bytes = new Uint8Array(buffer);
-          const len = bytes.byteLength;
-          for (let i = 0; i < len; i++) {
-            binary += String.fromCharCode(bytes[i]);
-          }
-          const base64 = btoa(binary);
-          const contentTypeHeader = imgRes.headers.get('content-type') || 'image/jpeg';
-          base64Image = `data:${contentTypeHeader};base64,${base64}`;
-        }
-      } catch (fetchErr) {
-        console.error('Failed to fetch image in Edge OG route:', fetchErr);
-      }
-    }
-
     return new ImageResponse(
       (
         <div
@@ -148,7 +125,7 @@ export async function GET(request: Request) {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={base64Image || finalImageUrl}
+              src={finalImageUrl}
               alt={title}
               style={{
                 width: '100%',
