@@ -34,20 +34,14 @@ export async function generateMetadata({
     keywords: productKeywords,
     openGraph: {
       type: "website",
+      siteName: "ToTstore",
       title: `${product.name} | ToTstore`,
       description: product.description.substring(0, 120),
-      images: [
-        {
-          url: product.image_url,
-          alt: `${product.name} - ToTstore`,
-        },
-      ],
     },
     twitter: {
       card: "summary_large_image",
       title: `${product.name} | ToTstore`,
       description: product.description.substring(0, 120),
-      images: [product.image_url],
     },
   };
 }
