@@ -28,6 +28,8 @@ export async function generateMetadata({
     "custom gifts"
   ];
 
+  const ogImageUrl = `/api/og?title=${encodeURIComponent(product.name)}&price=${product.price}&image=${encodeURIComponent(product.image_url)}`;
+
   return {
     title: `${product.name} | ToTstore`,
     description: product.description.substring(0, 120),
@@ -37,11 +39,20 @@ export async function generateMetadata({
       siteName: "ToTstore",
       title: `${product.name} | ToTstore`,
       description: product.description.substring(0, 120),
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${product.name} - ToTstore`,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: `${product.name} | ToTstore`,
       description: product.description.substring(0, 120),
+      images: [ogImageUrl],
     },
   };
 }
