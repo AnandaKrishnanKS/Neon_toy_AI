@@ -21,8 +21,13 @@ export async function GET(request: Request) {
         const imgRes = await fetch(finalImageUrl);
         if (imgRes.ok) {
           const buffer = await imgRes.arrayBuffer();
-          // In Edge Runtime, we use btoa instead of Buffer
-          const binary = String.fromCharCode(...new Uint8Array(buffer));
+          // Safe conversion loop to prevent "Maximum call stack size exceeded" RangeError
+          let binary = '';
+          const bytes = new Uint8Array(buffer);
+          const len = bytes.byteLength;
+          for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+          }
           const base64 = btoa(binary);
           const contentTypeHeader = imgRes.headers.get('content-type') || 'image/jpeg';
           base64Image = `data:${contentTypeHeader};base64,${base64}`;
@@ -141,20 +146,16 @@ export async function GET(request: Request) {
               background: '#151520',
             }}
           >
-            {base64Image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={base64Image}
-                alt={title}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                }}
-              />
-            ) : (
-              <div style={{ color: '#888', fontSize: '20px' }}>Loading...</div>
-            )}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={base64Image || finalImageUrl}
+              alt={title}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
+            />
           </div>
         </div>
       ),
