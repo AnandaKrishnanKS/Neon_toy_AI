@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "ToTstore | Handmade Crafts & Custom Gifts",
   description:
     "Shop unique handmade crafts and custom gifts at ToTstore. Thoughtfully crafted with love for every occasion.",
-  keywords: ["handmade crafts", "custom gifts", "handcrafted creations", "personalized gifts", "artisan shop"],
+  keywords: ["totstore", "handmade crafts", "custom gifts", "handcrafted creations", "personalized gifts", "artisan shop"],
   openGraph: {
     type: "website",
     siteName: "ToTstore",
