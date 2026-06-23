@@ -10,16 +10,16 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://totstore.trippytot.online"),
   title: "ToTstore | Handmade Crafts & Custom Gifts",
   description:
-    "Shop unique handmade crafts, custom gifts, and one-of-a-kind creations at ToTstore. Thoughtfully crafted with love — find the perfect gift for every occasion.",
+    "Shop unique handmade crafts and custom gifts at ToTstore. Thoughtfully crafted with love for every occasion.",
   openGraph: {
     type: "website",
     siteName: "ToTstore",
     title: "ToTstore | Handmade Crafts & Custom Gifts",
     description:
-      "Shop unique handmade crafts, custom gifts, and one-of-a-kind creations at ToTstore. Thoughtfully crafted with love — find the perfect gift for every occasion.",
+      "Shop unique handmade crafts and custom gifts at ToTstore. Thoughtfully crafted with love for every occasion.",
     images: [
       {
-        url: "/opengraph-image.png",
+        url: "/opengraph-image.jpg",
         width: 1200,
         height: 630,
         alt: "ToTstore — Shop Handmade Crafts & Custom Gifts",
@@ -30,8 +30,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "ToTstore | Handmade Crafts & Custom Gifts",
     description:
-      "Shop unique handmade crafts, custom gifts, and one-of-a-kind creations at ToTstore. Thoughtfully crafted with love — find the perfect gift for every occasion.",
-    images: ["/twitter-image.png"],
+      "Shop unique handmade crafts and custom gifts at ToTstore. Thoughtfully crafted with love for every occasion.",
+    images: ["/twitter-image.jpg"],
   },
   icons: {
     icon: "/favicon-circle.png",
