@@ -31,7 +31,6 @@ export async function GET(request: Request) {
             border: '8px solid #f5c842',
           }}
         >
-          {/* Left Side: Text Details and CTA */}
           <div
             style={{
               display: 'flex',
@@ -41,19 +40,18 @@ export async function GET(request: Request) {
               width: '55%',
             }}
           >
-            {/* Brand header */}
             <div
               style={{
                 fontSize: '24px',
                 fontWeight: 'bold',
                 color: '#f5c842',
                 letterSpacing: '2px',
+                display: 'flex',
               }}
             >
               ToTstore
             </div>
 
-            {/* Product details */}
             <div
               style={{
                 display: 'flex',
@@ -62,7 +60,6 @@ export async function GET(request: Request) {
                 marginBottom: '20px',
               }}
             >
-              {/* Headline */}
               <div
                 style={{
                   fontSize: '48px',
@@ -70,18 +67,19 @@ export async function GET(request: Request) {
                   color: '#ffffff',
                   lineHeight: '1.2',
                   marginBottom: '15px',
+                  display: 'flex',
                 }}
               >
                 {title}
               </div>
 
-              {/* Price tag */}
               {price && (
                 <div
                   style={{
                     fontSize: '32px',
                     fontWeight: 'bold',
                     color: '#f5c842',
+                    display: 'flex',
                   }}
                 >
                   ₹{price}
@@ -89,7 +87,6 @@ export async function GET(request: Request) {
               )}
             </div>
 
-            {/* Call-to-action button */}
             <div
               style={{
                 background: '#f5c842',
@@ -101,7 +98,7 @@ export async function GET(request: Request) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: 'fit-content',
+                width: 200,
                 boxShadow: '0 4px 14px rgba(245, 200, 66, 0.3)',
               }}
             >
@@ -109,7 +106,6 @@ export async function GET(request: Request) {
             </div>
           </div>
 
-          {/* Right Side: Product Image Card */}
           <div
             style={{
               width: '40%',
@@ -123,7 +119,6 @@ export async function GET(request: Request) {
               background: '#151520',
             }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={finalImageUrl}
               alt={title}
