@@ -10,6 +10,7 @@ import ProductCard from './ProductCard';
 import CartDrawer from './CartDrawer';
 import ReviewTicker from './ReviewTicker';
 import QuickViewModal from './QuickViewModal';
+import CustomOrderModal from './CustomOrderModal';
 
 const PAGE_SIZE = 9;
 const DEFAULT_CATEGORIES = ["All", "Vehicles", "Plush", "STEM", "Action"];
@@ -113,6 +114,7 @@ export default function StoreClient({
   const [showDeals, setShowDeals] = useState(false);
 
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [customOrderProduct, setCustomOrderProduct] = useState<Product | null>(null);
   
   // If no DB, we use local state for prototype
   const [localCart, setLocalCart] = useState<CartItem[]>([]);
@@ -404,6 +406,14 @@ export default function StoreClient({
               priority={index < 2}
               isSaved={savedProducts.some(p => p.id === product.id)}
               onToggleSave={handleToggleSave}
+              onCustomOrder={(p) => {
+                if (!user) {
+                  alert('Please log in to request a custom order.');
+                  router.push('/login');
+                  return;
+                }
+                setCustomOrderProduct(p);
+              }}
             />
           ))}
           {filteredProducts.length === 0 && (
@@ -445,6 +455,15 @@ export default function StoreClient({
           onAddToCart={handleAddToCart}
           isSaved={savedProducts.some(p => p.id === quickViewProduct.id)}
           onToggleSave={handleToggleSave}
+        />
+      )}
+
+      {customOrderProduct && (
+        <CustomOrderModal
+          product={customOrderProduct}
+          user={user}
+          isOpen={true}
+          onClose={() => setCustomOrderProduct(null)}
         />
       )}
     </>

@@ -232,6 +232,21 @@ If you have any questions about these Terms, please contact us at support@totsto
       );
     `);
 
+    // Create custom_enquiries table
+    console.log('Creating custom_enquiries table...');
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS custom_enquiries (
+        id SERIAL PRIMARY KEY,
+        product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+        user_email VARCHAR(255) NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        phone VARCHAR(50),
+        message TEXT NOT NULL,
+        status VARCHAR(50) DEFAULT 'Pending',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     client.release();
     console.log('✅ Database setup complete!');
     process.exit(0);

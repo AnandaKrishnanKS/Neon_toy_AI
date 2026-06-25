@@ -4,7 +4,7 @@ import { query, isDbConnected } from '@/lib/db';
 import { cookies } from 'next/headers';
 import { OAuth2Client } from 'google-auth-library';
 import { SignJWT, jwtVerify } from 'jose';
-import { sendOrderStatusEmail } from '@/lib/email';
+import { sendOrderStatusEmail, sendCustomEnquiryStatusEmail } from '@/lib/email';
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback_secret_for_development_do_not_use_in_prod');
 
@@ -572,4 +572,74 @@ export async function getSavedProducts() {
     console.error('Error fetching saved products:', error);
     return { success: false, error: error.message, items: [] };
   }
+}
+
+export async function submitCustomEnquiry(data: {
+  productId: number;
+  name: string;
+  email: string;
+  phone?: string;
+  message: string;
+}) {
+  if (!isDbConnected) {
+    return { success: false, error: 'Database is not connected.' };
+  }
+  if (!data.productId || !data.name || !data.email || !data.message) {
+    return { success: false, error: 'Missing required fields.' };
+  }
+  try {
+    const insertRes = await query(
+      `INSERT INTO custom_enquiries (product_id, user_email, name, phone, message)
+       VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+      [data.productId, data.email, data.name, data.phone || null, data.message]
+    );
+
+    const insertedId = insertRes.rows[0].id;
+
+    // Fetch detailed enquiry info to send in the email
+    const enqRes = await query(
+      `SELECT ce.*, p.name as product_name, p.image_url as product_image, p.price as product_price, p.category as product_category
+       FROM custom_enquiries ce
+       JOIN products p ON ce.product_id = p.id
+       WHERE ce.id = $1`,
+      [insertedId]
+    );
+
+    let emailSent = false;
+    if (enqRes.rows.length > 0) {
+      const enquiry = enqRes.rows[0];
+      try {
+        const emailRes = await sendCustomEnquiryStatusEmail(enquiry, 'submitted', data.email);
+        emailSent = emailRes?.success || false;
+      } catch (emailErr) {
+        console.error('Email sending error on submit custom enquiry (non-fatal):', emailErr);
+      }
+    }
+
+    return { success: true, emailSent };
+  } catch (error: any) {
+    console.error('Error submitting custom enquiry:', error);
+    return { success: false, error: error.message || 'Failed to submit enquiry.' };
+  }
+}
+
+export async function getUserCustomEnquiries() {
+  const user = await getUser();
+  if (!user || !user.email) return [];
+  try {
+    if (isDbConnected) {
+      const res = await query(
+        `SELECT ce.*, p.name as product_name, p.image_url as product_image, p.price as product_price, p.category as product_category
+         FROM custom_enquiries ce
+         JOIN products p ON ce.product_id = p.id
+         WHERE ce.user_email = $1
+         ORDER BY ce.created_at DESC`,
+        [user.email]
+      );
+      return res.rows;
+    }
+  } catch (e) {
+    console.error('Fetch User Custom Enquiries Error:', e);
+  }
+  return [];
 }
