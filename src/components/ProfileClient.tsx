@@ -6,6 +6,36 @@ import { updateProfile, logout } from '@/app/actions';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+// Curated location data structure for dynamic dropdowns
+const locationData: Record<string, Record<string, string[]>> = {
+  'Kerala': {
+    'Ernakulam': ['Kochi', 'Aluva', 'Muvattupuzha', 'Angamaly', 'Perumbavoor', 'Kalamassery', 'Tripunithura'],
+    'Thiruvananthapuram': ['Trivandrum', 'Neyyattinkara', 'Attingal', 'Nedumangad', 'Varkala'],
+    'Kozhikode': ['Calicut', 'Vadakara', 'Koyilandy', 'Thamarassery', 'Feroke'],
+    'Thrissur': ['Thrissur City', 'Chalakudy', 'Kunnamkulam', 'Irinjalakuda', 'Guruvayur'],
+    'Kollam': ['Kollam City', 'Punalur', 'Karunagappally', 'Kottarakkara']
+  },
+  'Karnataka': {
+    'Bangalore Urban': ['Bangalore', 'Yelahanka', 'Kengeri', 'Whitefield', 'Electronic City'],
+    'Mysore': ['Mysore City', 'Hunsur', 'Nanjangud', 'K.R. Nagar'],
+    'Dakshina Kannada': ['Mangalore', 'Ullal', 'Puttur', 'Bantwal']
+  },
+  'Tamil Nadu': {
+    'Chennai': ['Chennai City', 'Tambaram', 'Avadi', 'Ambattur'],
+    'Coimbatore': ['Coimbatore City', 'Pollachi', 'Mettupalayam', 'Tiruppur'],
+    'Madurai': ['Madurai City', 'Melur', 'Thirumangalam', 'Usilampatti']
+  },
+  'Maharashtra': {
+    'Mumbai': ['Mumbai City', 'Suburban Mumbai', 'Thane', 'Navi Mumbai'],
+    'Pune': ['Pune City', 'Pimpri-Chinchwad', 'Baramati', 'Lonavala'],
+    'Nagpur': ['Nagpur City', 'Kamthi', 'Umred']
+  },
+  'Delhi': {
+    'New Delhi': ['Connaught Place', 'Chanakyapuri', 'Vasant Kunj', 'Dwarka'],
+    'South Delhi': ['Saket', 'Mehrauli', 'Hauz Khas', 'Greater Kailash']
+  }
+};
+
 export default function ProfileClient({ user }: { user: User }) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -14,6 +44,9 @@ export default function ProfileClient({ user }: { user: User }) {
     email: user.email || '',
     phone: user.phone || '',
     address: user.address || '',
+    landmark: user.landmark || '',
+    state: user.state || '',
+    district: user.district || '',
     city: user.city || '',
     zipCode: user.zipCode || ''
   });
@@ -34,8 +67,35 @@ export default function ProfileClient({ user }: { user: User }) {
     document.documentElement.setAttribute('data-theme', newTheme);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    setFormData(prev => ({
+      ...prev,
+      state: val,
+      district: '',
+      city: ''
+    }));
+  };
+
+  const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    setFormData(prev => ({
+      ...prev,
+      district: val,
+      city: ''
+    }));
+  };
+
+  const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    setFormData(prev => ({
+      ...prev,
+      city: val
+    }));
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -53,8 +113,6 @@ export default function ProfileClient({ user }: { user: User }) {
     await logout();
     router.refresh();
   };
-
-
 
   return (
     <div className="profile-container">
@@ -106,7 +164,7 @@ export default function ProfileClient({ user }: { user: User }) {
               </div>
               <div className="form-group">
                 <label>Email Address</label>
-                <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+                <input type="email" name="email" value={formData.email} onChange={handleChange} required disabled />
               </div>
               <div className="form-group">
                 <label>Phone Number</label>
@@ -115,23 +173,137 @@ export default function ProfileClient({ user }: { user: User }) {
               
               <h2 className="form-section-title">Shipping Address</h2>
               <div className="form-group">
-                <label>Street Address</label>
-                <input type="text" name="address" value={formData.address} onChange={handleChange} />
+                <label htmlFor="profile-address">Street Address *</label>
+                <textarea 
+                  id="profile-address"
+                  name="address" 
+                  value={formData.address} 
+                  onChange={handleChange} 
+                  required
+                  placeholder="Flat/House No., Building, Street/Locality"
+                  style={{ 
+                    resize: 'vertical',
+                    width: '100%',
+                    padding: '10px 12px',
+                    borderRadius: '8px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid var(--glass-border)',
+                    color: 'var(--text-primary)',
+                    outline: 'none'
+                  }}
+                  rows={2}
+                />
               </div>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>City</label>
-                  <input type="text" name="city" value={formData.city} onChange={handleChange} />
-                </div>
-                <div className="form-group">
-                  <label>Pin Code (Digits only)</label>
+
+              <div className="form-row" style={{ display: 'flex', gap: '15px' }}>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label htmlFor="profile-landmark">Landmark</label>
                   <input 
-                    type="number" 
+                    id="profile-landmark"
+                    type="text" 
+                    name="landmark" 
+                    value={formData.landmark} 
+                    onChange={handleChange} 
+                    placeholder="e.g. Near Central Park"
+                  />
+                </div>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label htmlFor="profile-zipCode">Pin Code *</label>
+                  <input 
+                    id="profile-zipCode"
+                    type="text" 
                     name="zipCode" 
                     value={formData.zipCode} 
-                    onChange={handleChange} 
-                    placeholder="e.g. 110001"
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, '').substring(0, 6);
+                      setFormData(prev => ({ ...prev, zipCode: val }));
+                    }}
+                    required
+                    placeholder="6-digit PIN code"
+                    pattern="[0-9]{6}"
+                    maxLength={6}
                   />
+                </div>
+              </div>
+
+              <div className="form-row" style={{ display: 'flex', gap: '15px' }}>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label htmlFor="profile-state">State *</label>
+                  <select
+                    id="profile-state"
+                    name="state"
+                    value={formData.state}
+                    onChange={handleStateChange}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      borderRadius: '8px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      border: '1px solid var(--glass-border)',
+                      color: 'var(--text-primary)',
+                      outline: 'none'
+                    }}
+                  >
+                    <option value="" style={{ backgroundColor: '#18191a' }}>Select State</option>
+                    {Object.keys(locationData).map((st) => (
+                      <option key={st} value={st} style={{ backgroundColor: '#18191a' }}>{st}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label htmlFor="profile-district">District *</label>
+                  <select
+                    id="profile-district"
+                    name="district"
+                    value={formData.district}
+                    onChange={handleDistrictChange}
+                    required
+                    disabled={!formData.state}
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      borderRadius: '8px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      border: '1px solid var(--glass-border)',
+                      color: 'var(--text-primary)',
+                      outline: 'none',
+                      opacity: formData.state ? 1 : 0.6
+                    }}
+                  >
+                    <option value="" style={{ backgroundColor: '#18191a' }}>Select District</option>
+                    {formData.state && Object.keys(locationData[formData.state] || {}).map((dist) => (
+                      <option key={dist} value={dist} style={{ backgroundColor: '#18191a' }}>{dist}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label htmlFor="profile-city">City *</label>
+                  <select
+                    id="profile-city"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleCityChange}
+                    required
+                    disabled={!formData.district}
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      borderRadius: '8px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      border: '1px solid var(--glass-border)',
+                      color: 'var(--text-primary)',
+                      outline: 'none',
+                      opacity: formData.district ? 1 : 0.6
+                    }}
+                  >
+                    <option value="" style={{ backgroundColor: '#18191a' }}>Select City</option>
+                    {formData.state && formData.district && (locationData[formData.state]?.[formData.district] || []).map((ct) => (
+                      <option key={ct} value={ct} style={{ backgroundColor: '#18191a' }}>{ct}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -157,9 +329,14 @@ export default function ProfileClient({ user }: { user: User }) {
               <div className="detail-item">
                 <label>Shipping Address</label>
                 <span>
-                  {user.address 
-                    ? `${user.address}, ${user.city || ''} - ${user.zipCode || ''}` 
-                    : 'Not provided'}
+                  {user.address ? (
+                    <>
+                      {user.address}
+                      {user.landmark && `, Landmark: ${user.landmark}`}
+                      <br />
+                      {user.city && `${user.city}`}{user.district && `, ${user.district}`}{user.state && `, ${user.state}`} - {user.zipCode}
+                    </>
+                  ) : 'Not provided'}
                 </span>
               </div>
               <div className="detail-item">

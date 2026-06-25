@@ -96,6 +96,9 @@ async function setup() {
         avatar TEXT,
         phone VARCHAR(50),
         address TEXT,
+        landmark VARCHAR(255),
+        state VARCHAR(100),
+        district VARCHAR(100),
         city VARCHAR(100),
         zipcode VARCHAR(20)
       );
@@ -242,9 +245,32 @@ If you have any questions about these Terms, please contact us at support@totsto
         name VARCHAR(255) NOT NULL,
         phone VARCHAR(50),
         message TEXT NOT NULL,
+        address TEXT,
+        landmark VARCHAR(255),
+        state VARCHAR(100),
+        district VARCHAR(100),
+        city VARCHAR(100),
+        pincode VARCHAR(20),
         status VARCHAR(50) DEFAULT 'Pending',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+    `);
+
+    // Ensure columns exist if table was already created
+    await client.query(`
+      ALTER TABLE custom_enquiries ADD COLUMN IF NOT EXISTS address TEXT;
+      ALTER TABLE custom_enquiries ADD COLUMN IF NOT EXISTS landmark VARCHAR(255);
+      ALTER TABLE custom_enquiries ADD COLUMN IF NOT EXISTS state VARCHAR(100);
+      ALTER TABLE custom_enquiries ADD COLUMN IF NOT EXISTS district VARCHAR(100);
+      ALTER TABLE custom_enquiries ADD COLUMN IF NOT EXISTS city VARCHAR(100);
+      ALTER TABLE custom_enquiries ADD COLUMN IF NOT EXISTS pincode VARCHAR(20);
+    `);
+
+    // Ensure users table address columns exist
+    await client.query(`
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS landmark VARCHAR(255);
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS state VARCHAR(100);
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS district VARCHAR(100);
     `);
 
     client.release();

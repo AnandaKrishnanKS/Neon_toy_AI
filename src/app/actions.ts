@@ -210,11 +210,14 @@ export async function updateProfile(updatedData: Partial<any>) {
     if (isDbConnected) {
       await query(`
         UPDATE users 
-        SET phone = $1, address = $2, city = $3, zipcode = $4
-        WHERE email = $5
+        SET phone = $1, address = $2, landmark = $3, state = $4, district = $5, city = $6, zipcode = $7
+        WHERE email = $8
       `, [
         updatedData.phone || null, 
         updatedData.address || null, 
+        updatedData.landmark || null,
+        updatedData.state || null,
+        updatedData.district || null,
         updatedData.city || null, 
         updatedData.zipCode || null, // Map form 'zipCode' to DB 'zipcode'
         user.email
@@ -580,18 +583,46 @@ export async function submitCustomEnquiry(data: {
   email: string;
   phone?: string;
   message: string;
+  address: string;
+  landmark?: string;
+  state: string;
+  district: string;
+  city: string;
+  pincode: string;
 }) {
   if (!isDbConnected) {
     return { success: false, error: 'Database is not connected.' };
   }
-  if (!data.productId || !data.name || !data.email || !data.message) {
+  if (
+    !data.productId ||
+    !data.name ||
+    !data.email ||
+    !data.message ||
+    !data.address ||
+    !data.state ||
+    !data.district ||
+    !data.city ||
+    !data.pincode
+  ) {
     return { success: false, error: 'Missing required fields.' };
   }
   try {
     const insertRes = await query(
-      `INSERT INTO custom_enquiries (product_id, user_email, name, phone, message)
-       VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-      [data.productId, data.email, data.name, data.phone || null, data.message]
+      `INSERT INTO custom_enquiries (product_id, user_email, name, phone, message, address, landmark, state, district, city, pincode)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id`,
+      [
+        data.productId,
+        data.email,
+        data.name,
+        data.phone || null,
+        data.message,
+        data.address,
+        data.landmark || null,
+        data.state,
+        data.district,
+        data.city,
+        data.pincode
+      ]
     );
 
     const insertedId = insertRes.rows[0].id;

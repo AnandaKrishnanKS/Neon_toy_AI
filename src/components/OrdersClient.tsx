@@ -138,17 +138,13 @@ export default function OrdersClient({
                   month: 'long', day: 'numeric', year: 'numeric'
                 });
 
+                const shipping = typeof order.shipping_details === 'string'
+                  ? JSON.parse(order.shipping_details)
+                  : order.shipping_details || {};
+
                 // Helper to safely extract payment method
-                let isPaidOrder = false;
-                try {
-                  const details = typeof order.shipping_details === 'string'
-                    ? JSON.parse(order.shipping_details)
-                    : order.shipping_details;
-                  const method = (details?.payment_method || 'COD').toUpperCase();
-                  isPaidOrder = method !== 'COD';
-                } catch {
-                  isPaidOrder = false;
-                }
+                const method = (shipping.payment_method || 'COD').toUpperCase();
+                const isPaidOrder = method !== 'COD';
 
                 return (
                   <div key={order.id} className={`order-tracking-card ${isCancelled ? 'cancelled' : ''} ${isRefunded ? 'refunded' : ''}`}>
@@ -213,7 +209,14 @@ export default function OrdersClient({
                     <div className="order-footer-details">
                       <div className="shipping-to">
                         <label>Shipping To:</label>
-                        <span>{order.shipping_details.address}, {order.shipping_details.city}</span>
+                        <span>
+                          {shipping.address}
+                          {shipping.landmark && `, Landmark: ${shipping.landmark}`}
+                          {shipping.city && `, ${shipping.city}`}
+                          {shipping.district && `, ${shipping.district}`}
+                          {shipping.state && `, ${shipping.state}`}
+                          {shipping.zipcode && ` - ${shipping.zipcode}`}
+                        </span>
                       </div>
                       <div className="order-total-info">
                         <label>Total Amount:</label>

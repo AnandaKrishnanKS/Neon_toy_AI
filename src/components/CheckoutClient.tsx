@@ -67,8 +67,8 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
   };
 
   const handlePlaceOrder = async () => {
-    if (!user.address || !user.zipCode) {
-      alert('Please fill out your shipping address and pin code in your profile before ordering.');
+    if (!user.address || !user.zipCode || !user.city || !user.state || !user.district) {
+      alert('Please fill out your complete shipping address (including state, district, city, and pin code) in your profile before ordering.');
       router.push('/profile');
       return;
     }
@@ -84,6 +84,9 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
           name: user.name,
           phone: user.phone,
           address: user.address,
+          landmark: user.landmark || '',
+          state: user.state || '',
+          district: user.district || '',
           city: user.city,
           zipcode: user.zipCode,
           payment_method: 'COD'
@@ -139,6 +142,9 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
                 name: user.name,
                 phone: user.phone,
                 address: user.address,
+                landmark: user.landmark || '',
+                state: user.state || '',
+                district: user.district || '',
                 city: user.city,
                 zipcode: user.zipCode,
                 payment_method: 'RAZORPAY',
@@ -186,7 +192,14 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
           <p>Thank you for shopping with ToTStore. Your order <strong>#NT-{orderId}</strong> is being processed.</p>
           <div className="order-summary-box">
             <p><strong>Payment Method:</strong> {paymentMethod === 'cod' ? 'Cash on Delivery' : 'Razorpay Secure Payment'}</p>
-            <p><strong>Delivery Address:</strong> {user.address}, {user.city} - {user.zipCode}</p>
+            <p>
+              <strong>Delivery Address:</strong>{' '}
+              {user.address}
+              {user.landmark ? `, Landmark: ${user.landmark}` : ''}
+              {user.city ? `, ${user.city}` : ''}
+              {user.district ? `, ${user.district}` : ''}
+              {user.state ? `, ${user.state}` : ''} - {user.zipCode}
+            </p>
           </div>
           
           <div className="email-status-banner" style={{
@@ -246,8 +259,11 @@ export default function CheckoutClient({ user, cartItems, cartTotal }: CheckoutC
                 </div>
                 {user.address ? (
                   <address>
-                    {user.address}<br />
-                    {user.city}, {user.zipCode}<br />
+                    {user.address}
+                    {user.landmark && `, Landmark: ${user.landmark}`}
+                    <br />
+                    {user.city && `${user.city}`}{user.district && `, ${user.district}`}{user.state && `, ${user.state}`} - {user.zipCode}
+                    <br />
                     {user.phone}
                   </address>
                 ) : (

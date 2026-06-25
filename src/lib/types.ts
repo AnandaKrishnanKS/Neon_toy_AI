@@ -32,6 +32,9 @@ export type User = {
   email?: string;
   phone?: string;
   address?: string;
+  landmark?: string;
+  state?: string;
+  district?: string;
   city?: string;
   zipCode?: string;
 };

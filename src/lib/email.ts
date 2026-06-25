@@ -141,7 +141,8 @@ function generateEmailHtml(order: any, type: 'placed' | 'processing' | 'cancelle
                   <div style="background-color: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 20px; margin-bottom: 25px; color: #d1d5db; font-size: 0.95rem; line-height: 1.5;">
                     <strong style="color: #ffffff; font-size: 1rem; display: block; margin-bottom: 5px;">${shipping?.name || 'Customer'}</strong>
                     <div>Phone: ${shipping?.phone || 'N/A'}</div>
-                    <div>Address: ${shipping?.address || 'N/A'}, ${shipping?.city || ''}</div>
+                    <div>Address: ${shipping?.address || 'N/A'}${shipping?.landmark ? `, Landmark: ${shipping.landmark}` : ''}</div>
+                    <div>Location: ${[shipping?.city, shipping?.district, shipping?.state].filter(Boolean).join(', ') || 'N/A'}</div>
                     <div>Pincode: ${shipping?.zipcode || 'N/A'}</div>
                   </div>
 
@@ -394,6 +395,15 @@ function generateCustomEnquiryEmailHtml(enquiry: any, type: 'submitted' | 'in_pr
                     <strong style="color: #ffffff; font-size: 1rem; display: block; margin-bottom: 5px;">${enquiry.name || 'Customer'}</strong>
                     <div>Email: ${enquiry.user_email}</div>
                     ${enquiry.phone ? `<div>Phone: ${enquiry.phone}</div>` : ''}
+                  </div>
+
+                  <!-- Shipping details -->
+                  <h3 style="color: #ffffff; font-size: 1.05rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 12px 0;">Delivery Information</h3>
+                  <div style="background-color: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 20px; margin-bottom: 25px; color: #d1d5db; font-size: 0.95rem; line-height: 1.5;">
+                    <div><strong>Address:</strong> ${enquiry.address || '—'}</div>
+                    ${enquiry.landmark ? `<div><strong>Landmark:</strong> ${enquiry.landmark}</div>` : ''}
+                    <div><strong>Location:</strong> ${enquiry.city || '—'}, ${enquiry.district || '—'}, ${enquiry.state || '—'}</div>
+                    <div><strong>Pincode:</strong> ${enquiry.pincode || '—'}</div>
                   </div>
 
                 </td>
