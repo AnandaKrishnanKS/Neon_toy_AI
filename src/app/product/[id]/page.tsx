@@ -28,7 +28,14 @@ export async function generateMetadata({
     "custom gifts"
   ];
 
-  const ogImageUrl = `/api/og?title=${encodeURIComponent(product.name)}&price=${product.price}&image=${encodeURIComponent(product.image_url)}`;
+  // Ensure we have an absolute URL for the image
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://totstore.trippytot.online';
+  let ogImageUrl = product.image_url;
+  if (ogImageUrl && ogImageUrl.startsWith('/')) {
+    ogImageUrl = `${siteUrl}${ogImageUrl}`;
+  } else if (!ogImageUrl) {
+    ogImageUrl = `${siteUrl}/logo-o.jpg`; // Fallback image
+  }
 
   return {
     title: `${product.name} | ToTstore`,
@@ -42,8 +49,6 @@ export async function generateMetadata({
       images: [
         {
           url: ogImageUrl,
-          width: 1200,
-          height: 630,
           alt: `${product.name} - ToTstore`,
         },
       ],
